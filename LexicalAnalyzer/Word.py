@@ -14,7 +14,9 @@ class Word(Token):
 
 
 class Words(object):
-    eq = Word('==', Tag.EQ)
-    ne = Word('!=', Tag.NE)
-    le = Word('<=', Tag.LE)
-    ge = Word('>=', Tag.GE)
+    EQ = Word('==', Tag.EQ)
+    NE = Word('!=', Tag.NE)
+    LE = Word('<=', Tag.LE)
+    GE = Word('>=', Tag.GE)
+    IF = Word('if', Tag.IF)
+    ELSE = Word('else', Tag.ELSE)
