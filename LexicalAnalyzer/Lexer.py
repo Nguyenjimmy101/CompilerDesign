@@ -62,4 +62,4 @@ class Lexer(object):
 if __name__ == '__main__':
     lexer = Lexer()
     while True:
-        lexer.scan()
+        print(lexer.scan())
