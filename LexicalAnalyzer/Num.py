@@ -1,4 +1,4 @@
-from .Token import Token
+from LexicalAnalyzer.Token import Token
 
 
 class Num(Token):

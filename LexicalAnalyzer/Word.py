@@ -1,5 +1,5 @@
-from .Tag import Tag
-from .Token import Token
+from LexicalAnalyzer.Tag import Tag
+from LexicalAnalyzer.Token import Token
 
 
 class Word(Token):
