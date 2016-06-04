@@ -1,5 +1,7 @@
 import sys
 
+from LexicalAnalyzer.Num import Num
+from LexicalAnalyzer.Real import Real
 from LexicalAnalyzer.Tag import Tag
 from LexicalAnalyzer.Token import Token
 from LexicalAnalyzer.Word import Word, Words
@@ -58,6 +60,29 @@ class Lexer(object):
                 self.peek = ' '
 
                 return token
+
+        # NUMBERS
+        if self.peek.isnumeric():
+            v = 0
+            while True:
+                v = 10 * v + int(self.peek)
+                self._readch()
+                if not self.peek.isnumeric():
+                    break
+
+            if self.peek != '.':
+                return Num(v)
+
+            v = float(v)
+            d = 10
+
+            while True:
+                self._readch()
+                if not self.peek.isnumeric():
+                    break
+                v += int(self.peek) / d
+                d *= 10
+            return Real(v)
 
         # OPERATORS
         if self.peek == '=':
