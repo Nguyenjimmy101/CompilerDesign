@@ -1,13 +1,13 @@
 import sys
 
-from .Tag import Tag
-from .Token import Token
-from .Word import Words
+from LexicalAnalyzer.Tag import Tag
+from LexicalAnalyzer.Token import Token
+from LexicalAnalyzer.Word import Words
 
 
 class Lexer(object):
     line = 1
-    peek = " "
+    peek = ' '
     words = {
         'if': Tag.IF,
         'else': Tag.ELSE,
@@ -30,9 +30,11 @@ class Lexer(object):
 
     def scan(self):
         # WHITESPACE
-        while self.peek != ' ' and self.peek != '\t':
+        while self._readch():
             if self.peek == '\n':
                 self.line += 1
+            elif self.peek != ' ' and self.peek != '\t':
+                break
 
         # IDENTIFIERS
 
@@ -57,9 +59,3 @@ class Lexer(object):
                 return Words.ge
             else:
                 return Token('>')
-
-
-if __name__ == '__main__':
-    lexer = Lexer()
-    while True:
-        print(lexer.scan())
