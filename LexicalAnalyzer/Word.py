@@ -1,5 +1,6 @@
-from .Token import Token
 from .Tag import Tag
+from .Token import Token
+
 
 class Word(Token):
     lexeme = ''
@@ -10,6 +11,7 @@ class Word(Token):
 
     def __str__(self):
         return 'WORD: Lexeme is %s and tag is %s' % (self.lexeme, self.tag)
+
 
 class Words(object):
     eq = Word('==', Tag.EQ)
