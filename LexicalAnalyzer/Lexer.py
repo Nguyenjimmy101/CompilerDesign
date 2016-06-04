@@ -2,7 +2,7 @@ import sys
 
 from LexicalAnalyzer.Tag import Tag
 from LexicalAnalyzer.Token import Token
-from LexicalAnalyzer.Word import Words
+from LexicalAnalyzer.Word import Word, Words
 
 
 class Lexer(object):
@@ -37,25 +37,46 @@ class Lexer(object):
                 break
 
         # IDENTIFIERS
+        if self.peek.isalpha():
+            s = ''
+            while True:
+                s += self.peek
+                self._readch()
+                if not self.peek.isalnum():
+                    break
+
+            word = None
+            try:
+                word = getattr(Words, s.upper())
+                if word:
+                    return word
+            except AttributeError:
+                word = Word(s, Tag.ID)
+                self.reserve(word)
+
+                token = Token(self.peek)
+                self.peek = ' '
+
+                return token
 
         # OPERATORS
         if self.peek == '=':
             if self.readch('='):
-                return Words.eq
+                return Words.EQ
             else:
                 return Token('=')
         elif self.peek == '!':
             if self.readch('='):
-                return Words.ne
+                return Words.NE
             else:
                 return Token('!')
         elif self.peek == '<':
             if self.readch('='):
-                return Words.le
+                return Words.LE
             else:
                 return Token('<')
         elif self.peek == '>':
             if self.readch('='):
-                return Words.ge
+                return Words.GE
             else:
                 return Token('>')
