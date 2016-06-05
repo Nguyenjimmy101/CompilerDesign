@@ -12,11 +12,16 @@ from LexicalAnalyzer.Word import Word, Words
 class Lexer(object):
     line = 1
     peek = ' '
+    _skip = False
     words = {
         'if': Tag.IF,
         'else': Tag.ELSE,
         'while': Tag.WHILE,
     }
+
+    def __init__(self):
+        pass
+        # self._readch()
 
     def reserve(self, word):
         self.words[word.lexeme] = word
@@ -32,22 +37,38 @@ class Lexer(object):
         self.peek = ' '
         return True
 
+    def skip(self):
+        self._skip = True
+
     def scan(self):
-        # WHITESPACE
-        while True:
-            self._readch()
-            if self.peek == '\n':
-                self.line += 1
-            elif self.peek != ' ' and self.peek != '\t':
-                break
+        if self._skip:
+            self._skip = False
+        else:
+            # WHITESPACE
+            while True:
+                self._readch()
+                if self.peek == '\n':
+                    self.line += 1
+                    print('NEW LINE')
+                elif self.peek != ' ' and self.peek != '\t':
+                    break
+
+        # PARENTHESES
+        if self.peek == ')':
+            return Tag.END_PAREN
+
+        if self.peek == '(':
+            return Tag.BEGIN_PAREN
 
         # IDENTIFIERS
         if self.peek.isalpha():
             identifier = ''
             while True:
-                identifier += self.peek
-                self._readch()
-                if not self.peek.isalnum():
+                if self.peek.isalnum():
+                    identifier += self.peek
+                    self._readch()
+                else:
+                    self.skip()
                     break
 
             if identifier in ('true', 'false'):
@@ -70,9 +91,11 @@ class Lexer(object):
         if self.peek.isnumeric():
             number = 0
             while True:
-                number = 10 * number + int(self.peek)
-                self._readch()
-                if not self.peek.isnumeric():
+                if self.peek.isnumeric():
+                    number = 10 * number + int(self.peek)
+                    self._readch()
+                else:
+                    self.skip()
                     break
 
             if self.peek != '.':
@@ -82,11 +105,13 @@ class Lexer(object):
             digit = 10
 
             while True:
-                self._readch()
-                if not self.peek.isnumeric():
+                if self.peek.isnumeric():
+                    number += int(self.peek) / digit
+                    digit *= 10
+                    self._readch()
+                else:
+                    self.skip()
                     break
-                number += int(self.peek) / digit
-                digit *= 10
             return Real(number)
 
         # STRINGS
@@ -119,12 +144,6 @@ class Lexer(object):
         elif self.peek == '/':
             return Words.DIV
 
-        # PARENTHESES
-        if self.peek == '(':
-            return Tag.BEGIN_PAREN
-        elif self.peek == ')':
-            return Tag.END_PAREN
-
         # COMPARISON
         if self.peek == '=':
             if self.readch('='):
@@ -146,3 +165,5 @@ class Lexer(object):
                 return Words.GE
             else:
                 return Token('>')
+
+        return ''
