@@ -119,6 +119,11 @@ class Lexer(object):
         elif self.peek == '/':
             return Words.DIV
 
+        # PARENTHESES
+        if self.peek == '(':
+            return Tag.BEGIN_PAREN
+        elif self.peek == ')':
+            return Tag.END_PAREN
 
         # COMPARISON
         if self.peek == '=':

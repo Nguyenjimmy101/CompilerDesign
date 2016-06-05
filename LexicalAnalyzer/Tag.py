@@ -1,4 +1,6 @@
 class Tag:
+    BEGIN_PAREN = 260
+    END_PAREN = 261
     NUM = 270
     REAL = 272
     STRING = 280
