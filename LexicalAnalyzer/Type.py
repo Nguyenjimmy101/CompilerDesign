@@ -13,9 +13,9 @@ def numeric(p):
 def max(p1, p2):
     if not (numeric(p1)) or not (numeric(p2)):
         return null
-    elif p1 == Type.Float or p2 == Type.Float:
+    elif __eq__(p1, p2, Type.Float):
         return Type.Float
-    elif p1 == Type.Int or p2 == Type.Int:
+    elif __eq__(p1, p2, Type.Int):
         return Type.Int
     else:
         return Type.Char
@@ -30,6 +30,9 @@ class Type(Token):
 
     def __str__(self):
         return 'TYPE: Lexeme is %s tag is %s Width is %s' % (self.lexeme, self.tag, self.width)
+
+    def __eq__(self, p, type):
+        return self == type or p == type
 
 
 class Type(object):
