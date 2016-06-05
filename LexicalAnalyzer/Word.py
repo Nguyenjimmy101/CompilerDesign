@@ -27,3 +27,6 @@ class Words(object):
     WHILE = Word('while', Tag.WHILE)
     FOR = Word('for', Tag.FOR)
     RETURN = Word('return', Tag.RETURN)
+    DEF = Word('def', Tag.DEF)
+    FUN = Word('fun', Tag.FUN)
+    PRINTERR = Word('printerr', Tag.PRINTERR)
