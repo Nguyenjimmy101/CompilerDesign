@@ -23,10 +23,10 @@ class Lexer(object):
     def _readch(self):
         self.peek = sys.stdin.read(1)
 
-    def readch(self, c):
+    def readch(self, char):
         self._readch()
 
-        if self.peek != c:
+        if self.peek != char:
             return False
         self.peek = ' '
         return True
@@ -41,19 +41,19 @@ class Lexer(object):
 
         # IDENTIFIERS
         if self.peek.isalpha():
-            s = ''
+            identifier = ''
             while True:
-                s += self.peek
+                identifier += self.peek
                 self._readch()
                 if not self.peek.isalnum():
                     break
 
             try:
-                word = getattr(Words, s.upper())
+                word = getattr(Words, identifier.upper())
                 if word:
                     return word
             except AttributeError:
-                word = Word(s, Tag.ID)
+                word = Word(identifier, Tag.ID)
                 self.reserve(word)
 
                 token = Token(self.peek)
