@@ -9,7 +9,14 @@ def numeric(p):
     return p == Type.Char or p == Type.Int or p == Type.Float
 
 
-# ignore built in method max
+def __lt__(self, other):
+    return self < other
+
+
+def __gt__(self, other):
+    return self > other
+
+
 def max(p1, p2):
     if not (numeric(p1)) or not (numeric(p2)):
         return null
@@ -31,8 +38,8 @@ class Type(Token):
     def __str__(self):
         return 'TYPE: Lexeme is %s tag is %s Width is %s' % (self.lexeme, self.tag, self.width)
 
-    def __eq__(self, p, type):
-        return self == type or p == type
+    def __eq__(self, p, types):
+        return self == types or p == types
 
 
 class Type(object):
