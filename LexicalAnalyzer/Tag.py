@@ -33,7 +33,6 @@ class Tag:
     DEF = 283
     FUN = 284
     PRINTERR = 286
-    MINUS = 287
     ADD = 288
     MULT = 289
     DIV = 290
