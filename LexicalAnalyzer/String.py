@@ -7,7 +7,6 @@ class String(Token):
 
     def __init__(self, value):
         super().__init__(Tag.STRING)
-
         self.value = value
 
     def __str__(self):

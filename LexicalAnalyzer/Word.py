@@ -5,9 +5,9 @@ from LexicalAnalyzer.Token import Token
 class Word(Token):
     lexeme = ''
 
-    def __init__(self, s, tag):
+    def __init__(self, lexeme, tag):
         super().__init__(tag)
-        self.lexeme = s
+        self.lexeme = lexeme
 
     def __str__(self):
         return 'WORD: Lexeme is %s and tag is %s' % (self.lexeme, self.tag)
