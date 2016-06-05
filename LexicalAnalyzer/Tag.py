@@ -19,3 +19,10 @@ class Tag:
     TEMP = 273
     TRUE = 274
     WHILE = 275
+    ELIF = 276
+    PRINT = 277
+    LIST = 278
+    MAP = 279
+    WHILE = 280
+    FOR = 281
+    RETURN = 282
