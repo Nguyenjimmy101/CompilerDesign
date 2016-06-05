@@ -50,6 +50,9 @@ class Lexer(object):
                 if not self.peek.isalnum():
                     break
 
+            if identifier in ('true', 'false'):
+                return Bool(identifier)
+
             try:
                 word = getattr(Words, identifier.upper())
                 if word:
@@ -58,7 +61,7 @@ class Lexer(object):
                 word = Word(identifier, Tag.ID)
                 self.reserve(word)
 
-                token = Token(self.peek)
+                token = Token(identifier)
                 self.peek = ' '
 
                 return token
