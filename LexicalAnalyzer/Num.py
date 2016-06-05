@@ -1,5 +1,5 @@
-from LexicalAnalyzer.Token import Token
 from LexicalAnalyzer.Tag import Tag
+from LexicalAnalyzer.Token import Token
 
 
 class Num(Token):
@@ -7,7 +7,6 @@ class Num(Token):
 
     def __init__(self, value):
         super().__init__(Tag.NUM)
-
         self.value = value
 
     def __str__(self):

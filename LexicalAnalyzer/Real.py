@@ -1,13 +1,12 @@
-from LexicalAnalyzer.Token import Token
 from LexicalAnalyzer.Tag import Tag
+from LexicalAnalyzer.Token import Token
 
 
 class Real(Token):
-    value = None
+    value = 0
 
     def __init__(self, value):
         super().__init__(Tag.REAL)
-
         self.value = value
 
     def __str__(self):
