@@ -48,7 +48,6 @@ class Lexer(object):
                 if not self.peek.isalnum():
                     break
 
-            word = None
             try:
                 word = getattr(Words, s.upper())
                 if word:
@@ -64,26 +63,26 @@ class Lexer(object):
 
         # NUMBERS
         if self.peek.isnumeric():
-            v = 0
+            number = 0
             while True:
-                v = 10 * v + int(self.peek)
+                number = 10 * number + int(self.peek)
                 self._readch()
                 if not self.peek.isnumeric():
                     break
 
             if self.peek != '.':
-                return Num(v)
+                return Num(number)
 
-            v = float(v)
-            d = 10
+            number = float(number)
+            digit = 10
 
             while True:
                 self._readch()
                 if not self.peek.isnumeric():
                     break
-                v += int(self.peek) / d
-                d *= 10
-            return Real(v)
+                number += int(self.peek) / digit
+                digit *= 10
+            return Real(number)
 
         # STRINGS
         if self.peek in ('\'', '\"'):
