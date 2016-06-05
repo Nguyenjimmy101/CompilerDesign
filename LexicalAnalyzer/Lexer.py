@@ -2,6 +2,7 @@ import sys
 
 from LexicalAnalyzer.Num import Num
 from LexicalAnalyzer.Real import Real
+from LexicalAnalyzer.String import String
 from LexicalAnalyzer.Tag import Tag
 from LexicalAnalyzer.Token import Token
 from LexicalAnalyzer.Word import Word, Words
@@ -83,6 +84,26 @@ class Lexer(object):
                 v += int(self.peek) / d
                 d *= 10
             return Real(v)
+
+        # STRINGS
+        if self.peek in ('\'', '\"'):
+            # save the quote type so we don't stop on a different quote
+            quote = self.peek
+
+            string = ''
+            while True:
+                self._readch()
+                if self.peek == '\\':
+                    # skip escape characters
+                    string += self.peek
+                    self._readch()
+                    string += self.peek
+                elif self.peek == quote:
+                    break
+                else:
+                    string += self.peek
+
+            return String(string)
 
         # OPERATORS
         if self.peek == '=':
