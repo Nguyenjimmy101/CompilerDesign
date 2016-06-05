@@ -23,6 +23,5 @@ class Tag:
     PRINT = 277
     LIST = 278
     MAP = 279
-    WHILE = 280
     FOR = 281
     RETURN = 282
