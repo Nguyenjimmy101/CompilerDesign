@@ -20,7 +20,6 @@ class Lexer(object):
     def reserve(self, word):
         self.words[word.lexeme] = word
 
-    # TODO make stream come from class variable instead of stdin all the time
     def _readch(self):
         self.peek = sys.stdin.read(1)
 
