@@ -28,6 +28,10 @@ class Tag:
     MAP = 279
     FOR = 281
     RETURN = 282
-    DEF = 279
-    FUN = 281
-    PRINTERR = 283
+    DEF = 283
+    FUN = 284
+    PRINTERR = 286
+    MINUS = 287
+    ADD = 288
+    MULT = 289
+    DIV = 290

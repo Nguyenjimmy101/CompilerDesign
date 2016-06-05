@@ -30,3 +30,8 @@ class Words(object):
     DEF = Word('def', Tag.DEF)
     FUN = Word('fun', Tag.FUN)
     PRINTERR = Word('printerr', Tag.PRINTERR)
+    MINUS = Word('-', Tag.MINUS)
+    ADD = Word('+', Tag.ADD)
+    MULT = Word('*', Tag.MULT)
+    DIV = Word('/', Tag.DIV)
+
