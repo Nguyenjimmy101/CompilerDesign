@@ -12,3 +12,12 @@ class Real(Token):
 
     def __str__(self):
         return 'REAL: value is %s and tag is %s' % (self.value, self.tag)
+
+    def __lt__(self, other):
+        return self.value < other.value
+
+    def __gt__(self, other):
+        return self.value < other.value
+
+    def __eq__(self, other):
+        return self.value == other.value
