@@ -111,7 +111,7 @@ class Lexer(object):
 
         # OPERATORS
         if self.peek == '+':
-            return Words.PLUS
+            return Words.ADD
         elif self.peek == '-':
             return Words.MINUS
         elif self.peek == '*':
