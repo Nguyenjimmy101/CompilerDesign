@@ -87,6 +87,10 @@ class Lexer(object):
 
                 return token
 
+        # MAP KEY SEPARATOR
+        if self.peek == ':':
+            return Tag.KEY_SEPARATOR
+
         # NUMBERS
         if self.peek.isnumeric():
             number = 0
