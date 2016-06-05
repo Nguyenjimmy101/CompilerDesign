@@ -1,5 +1,6 @@
 import sys
 
+from LexicalAnalyzer.Bool import Bool
 from LexicalAnalyzer.Num import Num
 from LexicalAnalyzer.Real import Real
 from LexicalAnalyzer.String import String
@@ -33,7 +34,8 @@ class Lexer(object):
 
     def scan(self):
         # WHITESPACE
-        while self._readch():
+        while True:
+            self._readch()
             if self.peek == '\n':
                 self.line += 1
             elif self.peek != ' ' and self.peek != '\t':
