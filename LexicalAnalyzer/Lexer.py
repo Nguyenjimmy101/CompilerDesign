@@ -110,6 +110,17 @@ class Lexer(object):
             return String(string)
 
         # OPERATORS
+        if self.peek == '+':
+            return Words.PLUS
+        elif self.peek == '-':
+            return Words.MINUS
+        elif self.peek == '*':
+            return Words.MULT
+        elif self.peek == '/':
+            return Words.DIV
+
+
+        # COMPARISON
         if self.peek == '=':
             if self.readch('='):
                 return Words.EQ
