@@ -3,4 +3,9 @@ if == 1 1.0
 else
   printerr "There's something wrong"
 
-= variable true
+= someVariable true
+
+= otherVariable (+ 1 2)
+
+if == (list 1 2 3 "Hello") (append (list 1 2 3) 'Hello')
+  print 'Equal!'
