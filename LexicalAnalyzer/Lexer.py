@@ -62,7 +62,6 @@ class Lexer(object):
                 elif self.peek != ' ' and self.peek != '\t':
                     break
 
-
         # PARENTHESES
         if self.peek == ')':
             return Tag.END_PAREN
