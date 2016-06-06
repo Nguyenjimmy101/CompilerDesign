@@ -113,10 +113,10 @@ class Lexer(object):
                     number = 10 * number + int(self.peek)
                     self._readch()
                 else:
-                    self.skip()
                     break
 
             if self.peek != '.':
+                self.skip()
                 return Num(number)
 
             number = float(number)
@@ -128,7 +128,6 @@ class Lexer(object):
                     digit *= 10
                     self._readch()
                 else:
-                    self.skip()
                     break
             return Real(number)
 
