@@ -1,4 +1,7 @@
 class Tag:
+    LT = 250
+    GT = 251
+    ASSIGN = 252
     BEGIN_PAREN = 260
     END_PAREN = 261
     NUM = 270

@@ -153,7 +153,7 @@ class Lexer(object):
             if self.readch('='):
                 return Words.EQ
             else:
-                return Token('=')
+                return Words.ASSIGN
         elif self.peek == '!':
             if self.readch('='):
                 return Words.NE
@@ -163,11 +163,11 @@ class Lexer(object):
             if self.readch('='):
                 return Words.LE
             else:
-                return Token('<')
+                return Words.LT
         elif self.peek == '>':
             if self.readch('='):
                 return Words.GE
             else:
-                return Token('>')
+                return Words.GT
 
         return ''
