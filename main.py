@@ -7,5 +7,6 @@ if __name__ == '__main__':
     while True:
         out = lexer.scan()
         if isinstance(out, bool) and out == False:
+            print('END')
             break
         print(out)
