@@ -10,4 +10,4 @@ class Comment(Token):
         self.value = value
 
     def __str__(self):
-        return 'COMMENT: value is %s and tag is %s' % (self.value, self.tag)
+        return 'COMMENT: value is |%s| and tag is %s' % (self.value, self.tag)
