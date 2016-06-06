@@ -10,9 +10,9 @@ else
 if == (list 1 2 3 "Hello") (append (list 1 2 3) 'Hello')
   print 'Equal!'
 
-= c 0
 def loopadder a b
-  for i range(b)
+  = c 0
+  for i range b
     = c (+ a c)
   return c
-print loopadder(2 5)
+print (loopadder 2 5)
