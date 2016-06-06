@@ -63,7 +63,6 @@ class Lexer(object):
                     return False
                 if self.peek == '\n':
                     self.line += 1
-                    self._skipLine = False
                     print('NEW LINE')
                 elif self.peek != ' ' and self.peek != '\t':
                     break
