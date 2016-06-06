@@ -27,7 +27,11 @@ class Lexer(object):
         self.words[word.lexeme] = word
 
     def _readch(self):
-        self.peek = sys.stdin.read(1)
+        try:
+            self.peek = sys.stdin.read(1)
+        except EOFError:
+            print('eof error')
+
 
     def readch(self, char):
         self._readch()
@@ -55,6 +59,8 @@ class Lexer(object):
             # WHITESPACE
             while True:
                 self._readch()
+                if self.peek == '':
+                    return False
                 if self.peek == '\n':
                     self.line += 1
                     self._skipLine = False
