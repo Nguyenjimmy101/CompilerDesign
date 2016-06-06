@@ -1,6 +1,7 @@
 import sys
 
 from LexicalAnalyzer.Bool import Bool
+from LexicalAnalyzer.Comment import Comment
 from LexicalAnalyzer.Num import Num
 from LexicalAnalyzer.Real import Real
 from LexicalAnalyzer.String import String
@@ -21,7 +22,6 @@ class Lexer(object):
 
     def __init__(self):
         pass
-        # self._readch()
 
     def reserve(self, word):
         self.words[word.lexeme] = word
@@ -41,6 +41,13 @@ class Lexer(object):
         self._skip = True
 
     def scan(self):
+        if self.peek == '#':
+            comment = ''
+            while self.peek != '\n':
+                comment += self.peek
+                self._readch()
+            return Comment(comment)
+
         if self._skip:
             self._skip = False
         else:
@@ -49,9 +56,11 @@ class Lexer(object):
                 self._readch()
                 if self.peek == '\n':
                     self.line += 1
+                    self._skipLine = False
                     print('NEW LINE')
                 elif self.peek != ' ' and self.peek != '\t':
                     break
+
 
         # PARENTHESES
         if self.peek == ')':

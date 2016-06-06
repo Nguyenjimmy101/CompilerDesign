@@ -1,4 +1,5 @@
 class Tag:
+    COMMENT = 1
     LT = 250
     GT = 251
     ASSIGN = 252

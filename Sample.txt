@@ -7,7 +7,9 @@ else
 
 = otherVariable (+ 1 2)
 
-if == (list 1 2 3 "Hello") (append (list 1 2 3) 'Hello')
+# This is a comment
+
+if == (list 1 2 3 "Hello") (append (list 1 2 3) 'Hello') # Comment at the end of the if
   print 'Equal!'
 
 def loopadder a b
