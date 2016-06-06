@@ -13,10 +13,16 @@ class String(Token):
         return 'STRING: value is |%s| and tag is %s' % (self.value, self.tag)
 
     def __lt__(self, other):
+        if isinstance(other, String):
+            return self.value < other.value
         return self.value < other.value
 
     def __gt__(self, other):
-        return self.value < other.value
+        if isinstance(other, String):
+            return self.value > other.value
+        return self.value > other.value
 
     def __eq__(self, other):
-        return self.value == other.value
+        if isinstance(other, String):
+            return self.value == other.value
+        return self.value == other
