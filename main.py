@@ -5,4 +5,7 @@ from LexicalAnalyzer.Lexer import Lexer
 if __name__ == '__main__':
     lexer = Lexer()
     while True:
-        print(lexer.scan())
+        out = lexer.scan()
+        if isinstance(out, bool) and out == False:
+            break
+        print(out)
