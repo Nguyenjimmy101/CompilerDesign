@@ -46,6 +46,7 @@ class Lexer(object):
             while self.peek != '\n':
                 comment += self.peek
                 self._readch()
+            self.skip()
             return Comment(comment)
 
         if self._skip:
