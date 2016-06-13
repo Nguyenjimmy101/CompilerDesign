@@ -4,6 +4,10 @@ from LexicalAnalyzer.Bool import Bool
 from LexicalAnalyzer.Comment import Comment
 from LexicalAnalyzer.Num import Num
 from LexicalAnalyzer.Real import Real
+from LexicalAnalyzer.ScanAlpha import alpha_scanner
+from LexicalAnalyzer.ScanNumber import number_scanner
+from LexicalAnalyzer.ScanString import string_scanner
+from LexicalAnalyzer.ScanSymbol import symbol_scanner, symbol_dict
 from LexicalAnalyzer.String import String
 from LexicalAnalyzer.Tag import Tag
 from LexicalAnalyzer.Token import Token
@@ -32,7 +36,6 @@ class Lexer(object):
         except EOFError:
             print('eof error')
 
-
     def readch(self, char):
         self._readch()
 
@@ -44,7 +47,9 @@ class Lexer(object):
     def skip(self):
         self._skip = True
 
+    @property
     def scan(self):
+
         if self.peek == '#':
             comment = ''
             while self.peek != '\n':
@@ -67,13 +72,18 @@ class Lexer(object):
                 elif self.peek != ' ' and self.peek != '\t':
                     break
 
-        # PARENTHESES
-        if self.peek == ')':
-            return Tag.END_PAREN
+        if self.peek.isalpha():
+            return alpha_scanner(self)
+        elif self.peek.isnumeric():
+            return number_scanner(self)
+        elif self.peek in ('\'', '\"'):
+            return string_scanner(self)
+        elif self.peek in symbol_dict or self.peek in ("=", "!", "<", ">"):
+            return symbol_scanner(self)
+        return ''
 
-        if self.peek == '(':
-            return Tag.BEGIN_PAREN
 
+"""
         # IDENTIFIERS
         if self.peek.isalpha():
             identifier = ''
@@ -100,10 +110,6 @@ class Lexer(object):
                 self.peek = ' '
 
                 return token
-
-        # MAP KEY SEPARATOR
-        if self.peek == ':':
-            return Tag.KEY_SEPARATOR
 
         # NUMBERS
         if self.peek.isnumeric():
@@ -151,15 +157,21 @@ class Lexer(object):
 
             return String(string)
 
-        # OPERATORS
-        if self.peek == '+':
-            return Words.ADD
-        elif self.peek == '-':
-            return Words.MINUS
-        elif self.peek == '*':
-            return Words.MULT
-        elif self.peek == '/':
-            return Words.DIV
+        symbol_scanner(self)
+
+        # Symbols
+
+        symbol_dict = {':': Tag.KEY_SEPARATOR,
+                       ')': Tag.END_PAREN,
+                       '(': Tag.BEGIN_PAREN,
+                       '+': Words.ADD,
+                       '-': Words.MINUS,
+                       '*': Words.MULT,
+                       '/': Words.DIV,
+                       }
+
+        if self.peek in symbol_dict:
+            return symbol_dict[self.peek]
 
         # COMPARISON
         if self.peek == '=':
@@ -183,4 +195,24 @@ class Lexer(object):
             else:
                 return Words.GT
 
-        return ''
+        # MAP KEY SEPARATOR
+        if self.peek == ':':
+            return Tag.KEY_SEPARATOR
+
+        # PARENTHESES
+        if self.peek == ')':
+            return Tag.END_PAREN
+
+        if self.peek == '(':
+            return Tag.BEGIN_PAREN
+
+        # OPERATORS
+        if self.peek == '+':
+            return Words.ADD
+        elif self.peek == '-':
+            return Words.MINUS
+        elif self.peek == '*':
+            return Words.MULT
+        elif self.peek == '/':
+            return Words.DIV
+    """
