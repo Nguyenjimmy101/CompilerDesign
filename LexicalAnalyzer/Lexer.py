@@ -123,10 +123,10 @@ class Lexer(object):
             digit = 10
 
             while True:
+                self._readch()
                 if self.peek.isnumeric():
                     number += int(self.peek) / digit
                     digit *= 10
-                    self._readch()
                 else:
                     break
             return Real(number)
