@@ -23,15 +23,15 @@ class Lexer(object):
         'elif': Tag.ELIF,
     }
 
-    def __init__(self):
-        pass
+    def __init__(self, stream):
+        self.stream = stream
 
     def reserve(self, word):
         self.words[word.lexeme] = word
 
     def _readch(self):
         try:
-            self.peek = sys.stdin.read(1)
+            self.peek = self.stream.read(1)
         except EOFError:
             print('eof error')
 
@@ -48,6 +48,26 @@ class Lexer(object):
         self._skip = True
 
     def scan(self):
+        # WHITESPACE
+        while True:
+            if not self._skip:
+                self._readch()
+            self._skip = False
+
+            if self.peek == '':
+                return False
+
+            if self.peek == '\n':
+                self.line += 1
+                self.indent = 0
+                self.finished_indent = False
+                print('NEW LINE')
+            elif self.peek == ' ' and self.finished_indent == False:
+                self.indent += 1
+            elif self.peek != ' ' and self.peek != '\t':
+                self.finished_indent = True
+                break
+
         if self.peek == '#':
             comment = ''
             while self.peek != '\n':
@@ -56,38 +76,7 @@ class Lexer(object):
             self.skip()
             return Comment(comment)
 
-        # if self.peek == '\n':
-            # self.line += 1
-            # print('NEW LINE')
-            # self._readch()
 
-        if self._skip:
-            self._skip = False
-            if self.peek == '\n':
-                self.line += 1
-                self.indent = 0
-                self.finished_indent = False
-                print('NEW LINE')
-        else:
-            # WHITESPACE
-            while True:
-                self._readch()
-
-                if self.peek == '':
-                    return False
-
-                if self.peek == '\n':
-                    self.line += 1
-                    self.indent = 0
-                    self.finished_indent = False
-                    print('NEW LINE')
-                elif self.peek == ' ' and self.finished_indent == False:
-                    self.indent += 1
-                elif self.peek != ' ' and self.peek != '\t':
-                    self.finished_indent = True
-                    break
-
-        print(self.indent)
         # PARENTHESES
         if self.peek == ')':
             return Tag.END_PAREN
