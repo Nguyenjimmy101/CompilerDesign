@@ -41,6 +41,7 @@ class Parser(object):
             self.match(Tag.NE)
 
     def expr(self):
+        if self.look
         pass
 
     def stmt(self):
@@ -55,3 +56,4 @@ class Parser(object):
         self.match(Tag.ASSIGN)
         self.match(Tag.ID)
         self.expr()
+
