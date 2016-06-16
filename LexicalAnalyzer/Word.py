@@ -37,4 +37,4 @@ class Words(object):
     ADD = Word('+', Tag.ADD)
     MULT = Word('*', Tag.MULT)
     DIV = Word('/', Tag.DIV)
-
+    NEW_LINE = Word('NEW_LINE', Tag.NEW_LINE)

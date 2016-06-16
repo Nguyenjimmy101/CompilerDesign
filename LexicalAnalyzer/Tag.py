@@ -11,6 +11,7 @@ class Tag:
     BOOL = 283
 
     KEY_SEPARATOR = 285
+    NEW_LINE = 2
 
     AND = 256
     BASIC = 257
