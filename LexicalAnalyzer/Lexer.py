@@ -14,10 +14,13 @@ class Lexer(object):
     line = 1
     peek = ' '
     _skip = False
+    indent = 0
+    finished_indent = False
     words = {
         'if': Tag.IF,
         'else': Tag.ELSE,
         'while': Tag.WHILE,
+        'elif': Tag.ELIF,
     }
 
     def __init__(self):
@@ -53,20 +56,38 @@ class Lexer(object):
             self.skip()
             return Comment(comment)
 
+        # if self.peek == '\n':
+            # self.line += 1
+            # print('NEW LINE')
+            # self._readch()
+
         if self._skip:
             self._skip = False
+            if self.peek == '\n':
+                self.line += 1
+                self.indent = 0
+                self.finished_indent = False
+                print('NEW LINE')
         else:
             # WHITESPACE
             while True:
                 self._readch()
+
                 if self.peek == '':
                     return False
+
                 if self.peek == '\n':
                     self.line += 1
+                    self.indent = 0
+                    self.finished_indent = False
                     print('NEW LINE')
+                elif self.peek == ' ' and self.finished_indent == False:
+                    self.indent += 1
                 elif self.peek != ' ' and self.peek != '\t':
+                    self.finished_indent = True
                     break
 
+        print(self.indent)
         # PARENTHESES
         if self.peek == ')':
             return Tag.END_PAREN
@@ -97,7 +118,6 @@ class Lexer(object):
                 self.reserve(word)
 
                 token = Token(identifier)
-                self.peek = ' '
 
                 return token
 
@@ -128,6 +148,7 @@ class Lexer(object):
                     number += int(self.peek) / digit
                     digit *= 10
                 else:
+                    self.skip()
                     break
             return Real(number)
 
