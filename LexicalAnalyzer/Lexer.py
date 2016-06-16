@@ -76,13 +76,12 @@ class Lexer(object):
             self.skip()
             return Comment(comment)
 
-
         # PARENTHESES
         if self.peek == ')':
-            return Tag.END_PAREN
+            return Words.END_PAREN
 
         if self.peek == '(':
-            return Tag.BEGIN_PAREN
+            return Words.BEGIN_PAREN
 
         # IDENTIFIERS
         if self.peek.isalpha():

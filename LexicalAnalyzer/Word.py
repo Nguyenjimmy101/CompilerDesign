@@ -38,3 +38,5 @@ class Words(object):
     MULT = Word('*', Tag.MULT)
     DIV = Word('/', Tag.DIV)
     NEW_LINE = Word('NEW_LINE', Tag.NEW_LINE)
+    BEGIN_PAREN = Word('BEGIN_PAREN', Tag.BEGIN_PAREN)
+    END_PAREN = Word('END_PAREN', Tag.END_PAREN)
