@@ -108,7 +108,7 @@ class Lexer(object):
 
                 token = Token(identifier)
 
-                return token
+                return word
 
         # MAP KEY SEPARATOR
         if self.peek == ':':
