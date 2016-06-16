@@ -61,7 +61,7 @@ class Lexer(object):
                 self.line += 1
                 self.indent = 0
                 self.finished_indent = False
-                print('NEW LINE')
+                return Words.NEW_LINE
             elif self.peek == ' ' and self.finished_indent == False:
                 self.indent += 1
             elif self.peek != ' ' and self.peek != '\t':

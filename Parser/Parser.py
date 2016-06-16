@@ -7,6 +7,7 @@ class Parser(object):
     lex = None
     look = None
     top = None
+    indent = 0
     used = 0
 
     def __init__(self, stream):
@@ -14,16 +15,25 @@ class Parser(object):
         self.move()
 
     def move(self):
+        # if isinstance(self.look, bool) and self.look == False:
+            # return False
         self.look = self.lex.scan()
 
     def match(self, tag):
         if self.look.tag == tag:
             self.move()
+            # print(self.look)
+            self.indent = self.lex.indent
         else:
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
 
     def block(self):
         indent = self.indent
+        # TODO handle newline
+        self.match(Tag.NEW_LINE)
+        self.stmt()
+        while self.indent != indent:
+            self.stmt()
 
     def relop(self):
         if self.look.tag == Tag.LT:
@@ -40,7 +50,24 @@ class Parser(object):
             self.match(Tag.NE)
 
     def expr(self):
-        pass
+        if self.look.tag == Tag.NUM:
+            self.match(Tag.NUM)
+        elif self.look.tag == Tag.REAL:
+            self.match(Tag.REAL)
+        elif self.look.tag == Tag.STRING:
+            self.match(Tag.STRING)
+        elif self.look.tag == Tag.BOOL:
+            self.match(Tag.BOOL)
+        elif self.look.tag == Tag.ADD:
+            self.add()
+        elif self.look.tag == Tag.MINUS:
+            self.subtract()
+        elif self.look.tag == Tag.MULT:
+            self.multiply()
+        elif self.look.tag == Tag.DIV:
+            self.divide()
+        else:
+            self.match(Tag.ID)
 
     def stmt(self):
         if self.look.tag == Tag.IF:
@@ -67,7 +94,7 @@ class Parser(object):
             self.match(Tag.ID)
             self.expr()
             self.block()
-        else:
+        elif self.look.tag == Tag.ASSIGN:
             self.assign()
 
     def assign(self):
