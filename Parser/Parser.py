@@ -23,8 +23,7 @@ class Parser(object):
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
 
     def block(self):
-        #statements
-        pass
+        indent = self.indent
 
     def relop(self):
         if self.look.tag == Tag.LT:
@@ -51,6 +50,26 @@ class Parser(object):
             self.expr()
             self.expr()
             self.block()
+        elif self.look.tag == Tag.ELSE:
+            self.match(Tag.ELSE)
+            self.block()
+        elif self.look.tag == Tag.ELIF:
+            self.match(Tag.ELIF)
+            self.relop()
+            self.expr()
+            self.expr()
+            self.block()
+        elif self.look.tag == Tag.WHILE:
+            self.match(Tag.WHILE)
+            self.expr()
+            self.block()
+        elif self.look.tag == Tag.FOR:
+            self.match(Tag.FOR)
+            self.match(Tag.ID)
+            self.expr()
+            self.block()
+        else:
+            self.assign()
 
     def assign(self):
         self.match(Tag.ASSIGN)
