@@ -22,18 +22,25 @@ class Parser(object):
     def match(self, tag):
         if self.look.tag == tag:
             self.move()
-            # print(self.look)
+            print(self.indent, self.look)
             self.indent = self.lex.indent
         else:
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
 
     def block(self):
-        indent = self.indent
-        # TODO handle newline
+        oldindent = self.indent
         self.match(Tag.NEW_LINE)
+
+        if self.indent != oldindent + 2:
+            raise SyntaxError('Indent is not correct')
+
         self.stmt()
-        while self.indent != indent:
+        self.match(Tag.NEW_LINE)
+
+        while self.indent != oldindent:
             self.stmt()
+            self.match(Tag.NEW_LINE)
+        print('end block')
 
     def relop(self):
         if self.look.tag == Tag.LT:
@@ -66,6 +73,10 @@ class Parser(object):
             self.multiply()
         elif self.look.tag == Tag.DIV:
             self.divide()
+        elif self.look.tag == Tag.BEGIN_PAREN:
+            self.match(Tag.BEGIN_PAREN)
+            self.expr()
+            self.match(Tag.END_PAREN)
         else:
             self.match(Tag.ID)
 
@@ -96,9 +107,15 @@ class Parser(object):
             self.block()
         elif self.look.tag == Tag.ASSIGN:
             self.assign()
+        elif self.look.tag == Tag.NEW_LINE:
+            self.match(Tag.NEW_LINE)
 
     def assign(self):
         self.match(Tag.ASSIGN)
         self.match(Tag.ID)
         self.expr()
 
+    def add(self):
+        self.match(Tag.ADD)
+        self.expr()
+        self.expr()
