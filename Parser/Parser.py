@@ -14,15 +14,17 @@ class Parser(object):
         self.lex = Lexer(stream)
         self.move()
 
+    def start(self):
+        while self.look.tag != Tag.EOF:
+            self.stmt()
+
     def move(self):
-        # if isinstance(self.look, bool) and self.look == False:
-            # return False
         self.look = self.lex.scan()
 
     def match(self, tag):
         if self.look.tag == tag:
-            self.move()
             print(self.indent, self.look)
+            self.move()
             self.indent = self.lex.indent
         else:
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
@@ -59,12 +61,16 @@ class Parser(object):
     def expr(self):
         if self.look.tag == Tag.NUM:
             self.match(Tag.NUM)
+            self.expr()
         elif self.look.tag == Tag.REAL:
             self.match(Tag.REAL)
+            self.expr()
         elif self.look.tag == Tag.STRING:
             self.match(Tag.STRING)
+            self.expr()
         elif self.look.tag == Tag.BOOL:
             self.match(Tag.BOOL)
+            self.expr()
         elif self.look.tag == Tag.ADD:
             self.add()
         elif self.look.tag == Tag.MINUS:
@@ -73,12 +79,18 @@ class Parser(object):
             self.multiply()
         elif self.look.tag == Tag.DIV:
             self.divide()
+        elif self.look.tag == Tag.NEW_LINE:
+            self.match(Tag.NEW_LINE)
+            self.stmt()
         elif self.look.tag == Tag.BEGIN_PAREN:
             self.match(Tag.BEGIN_PAREN)
             self.expr()
+            while self.look.tag != Tag.END_PAREN:
+                self.expr()
             self.match(Tag.END_PAREN)
         else:
             self.match(Tag.ID)
+            self.expr()
 
     def stmt(self):
         if self.look.tag == Tag.IF:
@@ -107,8 +119,22 @@ class Parser(object):
             self.block()
         elif self.look.tag == Tag.ASSIGN:
             self.assign()
+        elif self.look.tag == Tag.DEF:
+            self.function()
+        elif self.look.tag == Tag.RETURN:
+            self.match(Tag.RETURN)
+            self.expr()
         elif self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
+        elif self.look.tag == Tag.PRINT:
+            self.match(Tag.PRINT)
+            self.stmt()
+        elif self.look.tag == Tag.PRINTERR:
+            self.match(Tag.PRINTERR)
+            self.stmt()
+        else:
+            self.match(Tag.ID)
+            self.move()
 
     def assign(self):
         self.match(Tag.ASSIGN)
@@ -119,3 +145,12 @@ class Parser(object):
         self.match(Tag.ADD)
         self.expr()
         self.expr()
+
+    def function(self):
+        self.match(Tag.DEF)
+        self.match(Tag.ID)
+
+        # Arguments
+        while self.look.tag != Tag.NEW_LINE:
+            self.match(Tag.ID)
+        self.block()

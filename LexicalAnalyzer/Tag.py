@@ -12,6 +12,7 @@ class Tag:
 
     KEY_SEPARATOR = 285
     NEW_LINE = 2
+    EOF = -1
 
     AND = 256
     BASIC = 257

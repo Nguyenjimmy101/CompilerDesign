@@ -55,7 +55,7 @@ class Lexer(object):
             self._skip = False
 
             if self.peek == '':
-                return False
+                return Words.EOF
 
             if self.peek == '\n':
                 self.line += 1

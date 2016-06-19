@@ -11,7 +11,7 @@ from Parser.Parser import Parser
 #     print('END ALL')
 
 def run_parser(parser):
-    parser.stmt()
+    parser.start()
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
