@@ -87,6 +87,7 @@ class Parser(object):
             self.expr()
             while self.look.tag != Tag.END_PAREN:
                 self.expr()
+        elif self.look.tag == Tag.END_PAREN:
             self.match(Tag.END_PAREN)
         else:
             self.match(Tag.ID)
