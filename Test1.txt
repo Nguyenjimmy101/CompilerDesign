@@ -1,1 +1,7 @@
-print 'Hello'
+def multiply a b
+  = result 0
+  for i range b
+    = result (+ result a)
+  return result
+
+print multiply 1 2
