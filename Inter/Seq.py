@@ -12,3 +12,6 @@ class Seq(Stmt):
             stmt1.gen(before, after)
         else:
             pass
+
+    def __repr__(self):
+        return str(self.stmt2.__dict__)

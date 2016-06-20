@@ -53,10 +53,8 @@ class Lexer(object):
                 self._readch()
             self._skip = False
 
-            if self.peek == '':
-                return Words.EOF
-
             if self.peek == '\n':
+                # import ipdb; ipdb.set_trace()
                 self.line += 1
                 self.indent = 0
                 self.finished_indent = False
@@ -66,6 +64,8 @@ class Lexer(object):
             elif self.peek != ' ' and self.peek != '\t':
                 self.finished_indent = True
                 break
+            elif self.peek == '':
+                return Words.EOF
 
         if self.peek == '#':
             comment = ''

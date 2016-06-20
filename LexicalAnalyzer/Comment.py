@@ -11,3 +11,5 @@ class Comment(Token):
 
     def __str__(self):
         return 'COMMENT: value is |%s| and tag is %s' % (self.value, self.tag)
+
+    __repr__ = __str__

@@ -12,6 +12,8 @@ class Bool(Token):
     def __str__(self):
         return 'BOOL: value is %s and tag is %s' % (self.value, self.tag)
 
+    __repr__ = __str__
+
     def __eq__(self, other):
         if isinstance(other, Bool):
             return self.value == other.value

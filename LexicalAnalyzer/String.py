@@ -12,6 +12,8 @@ class String(Token):
     def __str__(self):
         return 'STRING: value is |%s| and tag is %s' % (self.value, self.tag)
 
+    __repr__ = __str__
+
     def __lt__(self, other):
         if isinstance(other, String):
             return self.value < other.value

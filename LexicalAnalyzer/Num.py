@@ -9,3 +9,5 @@ class Num(BaseNumber):
 
     def __str__(self):
         return 'NUM: value is %s and tag is %s' % (self.value, self.tag)
+
+    __repr__ = __str__

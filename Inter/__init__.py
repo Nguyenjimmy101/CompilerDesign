@@ -9,3 +9,4 @@ from Inter.Arith import Arith
 from Inter.Seq import Seq
 from Inter.Assign import Assign
 from Inter.Paren import Paren
+from Inter.Function import Function

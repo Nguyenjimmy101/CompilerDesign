@@ -8,5 +8,12 @@ class Stmt(Node):
         pass
 
 
-Stmt.null = Stmt()
+class Null(Stmt):
+    def __init__(self):
+        self.type = 'NULL'
+
+    def __repr__(self):
+        return 'NULL'
+
+Stmt.null = Null()
 Stmt.enclosing = Stmt.null
