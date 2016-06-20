@@ -85,19 +85,19 @@ class Parser(object):
         if self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
 
-        e = None
+        expr = None
 
         if self.look.tag == Tag.NUM:
-            e = self.look
+            expr = self.look
             self.match(Tag.NUM)
         elif self.look.tag == Tag.REAL:
-            e = self.look
+            expr = self.look
             self.match(Tag.REAL)
         elif self.look.tag == Tag.STRING:
-            e = self.look
+            expr = self.look
             self.match(Tag.STRING)
         elif self.look.tag == Tag.BOOL:
-            e = self.look
+            expr = self.look
             self.match(Tag.BOOL)
         elif self.look.tag == Tag.ADD or self.look.tag == Tag.MINUS:
             return self.mathop()
@@ -110,13 +110,13 @@ class Parser(object):
             self.match(Tag.LIST)
             self.expr()
         elif self.look.tag == Tag.ID:
-            e = self.look
+            expr = self.look
             self.match(Tag.ID)
         elif self.look.tag == Tag.APPEND:
             self.match(Tag.APPEND)
             self.expr()
 
-        return e
+        return expr
 
     def stmt(self):
         if self.look.tag == Tag.NEW_LINE:
