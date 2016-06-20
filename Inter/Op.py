@@ -5,6 +5,8 @@ class Op(object):
         self.tok = tok
         self.p = p
 
-    def reduce:
-        x = gen();
-        t = 
+    def reduce(self):
+        self.x = gen()
+        self.t = Temp(type)
+        emit(str(t) + " = " + str(x))
+        return t
