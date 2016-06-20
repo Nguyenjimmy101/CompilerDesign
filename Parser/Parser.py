@@ -86,7 +86,9 @@ class Parser(object):
         elif self.look.tag == Tag.BOOL:
             self.match(Tag.BOOL)
             self.expr()
-        elif self.look.tag == Tag.ADD or self.look.tag == Tag.MINUS or self.look.tag == Tag.MULT or self.look.tag == Tag.DIV:
+        elif self.look.tag == Tag.ADD or self.look.tag == Tag.MINUS:
+            self.mathop()
+        elif self.look.tag == Tag.MULT or self.look.tag == Tag.DIV:
             self.mathop()
         elif self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
@@ -191,5 +193,3 @@ class Parser(object):
         while self.look.tag != Tag.NEW_LINE:
             self.expr()
         self.block()
-
-
