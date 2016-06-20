@@ -162,6 +162,21 @@ class Parser(object):
         self.expr()
         self.expr()
 
+    def multiply(self):
+        self.match(Tag.MULT)
+        self.expr()
+        self.expr()
+
+    def subtract(self):
+        self.match(Tag.MINUS)
+        self.expr()
+        self.expr()
+
+    def divide(self):
+        self.match(Tag.DIV)
+        self.expr()
+        self.expr()
+
     def function(self):
         self.match(Tag.DEF)
         self.match(Tag.ID)
@@ -170,3 +185,7 @@ class Parser(object):
         while self.look.tag != Tag.NEW_LINE:
             self.match(Tag.ID)
         self.block()
+
+
+
+
