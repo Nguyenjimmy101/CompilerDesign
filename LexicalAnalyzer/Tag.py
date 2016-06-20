@@ -44,3 +44,5 @@ class Tag:
     ADD = 288
     MULT = 289
     DIV = 290
+    APPEND = 291
+

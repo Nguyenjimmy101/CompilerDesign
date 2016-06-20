@@ -35,7 +35,6 @@ class Lexer(object):
         except EOFError:
             print('eof error')
 
-
     def readch(self, char):
         self._readch()
 

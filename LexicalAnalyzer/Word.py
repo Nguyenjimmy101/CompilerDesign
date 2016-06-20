@@ -26,6 +26,7 @@ class Words(object):
     ELIF = Word('elif', Tag.ELIF)
     PRINT = Word('print', Tag.PRINT)
     LIST = Word('list', Tag.LIST)
+    APPEND = Word('append', Tag.APPEND)
     MAP = Word('map', Tag.MAP)
     WHILE = Word('while', Tag.WHILE)
     FOR = Word('for', Tag.FOR)

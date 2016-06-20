@@ -58,6 +58,21 @@ class Parser(object):
         elif self.look.tag == Tag.NE:
             self.match(Tag.NE)
 
+    def mathop(self):
+        if self.look.tag == Tag.ADD:
+            self.match(Tag.ADD)
+            self.expr()
+            self.expr()
+        elif self.look.tag == Tag.MINUS:
+            self.match(Tag.MINUS)
+            self.expr()
+        elif self.look.tag == Tag.MULT:
+            self.match(Tag.MULT)
+            self.expr()
+        elif self.look.tag == Tag.DIV:
+            self.match(Tag.DIV)
+            self.expr()
+
     def expr(self):
         if self.look.tag == Tag.NUM:
             self.match(Tag.NUM)
@@ -71,14 +86,8 @@ class Parser(object):
         elif self.look.tag == Tag.BOOL:
             self.match(Tag.BOOL)
             self.expr()
-        elif self.look.tag == Tag.ADD:
-            self.add()
-        elif self.look.tag == Tag.MINUS:
-            self.subtract()
-        elif self.look.tag == Tag.MULT:
-            self.multiply()
-        elif self.look.tag == Tag.DIV:
-            self.divide()
+        elif self.look.tag == Tag.ADD or self.look.tag == Tag.MINUS or self.look.tag == Tag.MULT or self.look.tag == Tag.DIV:
+            self.mathop()
         elif self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
             self.stmt()
@@ -87,16 +96,16 @@ class Parser(object):
             self.expr()
             while self.look.tag != Tag.END_PAREN:
                 self.expr()
-        elif self.look.tag == Tag.END_PAREN:
             self.match(Tag.END_PAREN)
+            self.stmt()
         elif self.look.tag == Tag.LIST:
             self.match(Tag.LIST)
             self.expr()
-        elif self.look.tag == Tag.COMMENT:
-            self.match(Tag.COMMENT)
-            self.expr()
-        else:
+        elif self.look.tag == Tag.ID:
             self.match(Tag.ID)
+            self.expr()
+        elif self.look.tag == Tag.APPEND:
+            self.match(Tag.APPEND)
             self.expr()
 
     def stmt(self):
@@ -134,18 +143,16 @@ class Parser(object):
         elif self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
             self.stmt()
-        elif self.look.tag == Tag.PRINT:
-            self.match(Tag.PRINT)
-            self.expr()
-            self.stmt()
-        elif self.look.tag == Tag.PRINTERR:
-            self.match(Tag.PRINTERR)
-            self.expr()
-            self.stmt()
-        elif self.look.tag == Tag.COMMENT:
-            self.match(Tag.COMMENT)
+        elif self.look.tag == Tag.PRINT or self.look.tag == Tag.PRINTERR:
+            self.print()
         elif self.look.tag == Tag.FUN:
             self.lambd()
+        elif self.look.tag == Tag.COMMENT:
+            self.match(Tag.COMMENT)
+            self.stmt()
+        elif self.look.tag == Tag.APPEND:
+            self.match(Tag.APPEND)
+            self.expr()
         elif self.look.tag == Tag.EOF:
             # Exit on EOF
             print("End of the file")
@@ -160,25 +167,15 @@ class Parser(object):
         self.match(Tag.ID)
         self.expr()
 
-    def add(self):
-        self.match(Tag.ADD)
-        self.expr()
-        self.expr()
-
-    def multiply(self):
-        self.match(Tag.MULT)
-        self.expr()
-        self.expr()
-
-    def subtract(self):
-        self.match(Tag.MINUS)
-        self.expr()
-        self.expr()
-
-    def divide(self):
-        self.match(Tag.DIV)
-        self.expr()
-        self.expr()
+    def print(self):
+        if self.look.tag == Tag.PRINT:
+            self.match(Tag.PRINT)
+            self.expr()
+            self.stmt()
+        else:
+            self.match(Tag.PRINTERR)
+            self.expr()
+            self.stmt()
 
     def function(self):
         self.match(Tag.DEF)
@@ -194,4 +191,5 @@ class Parser(object):
         while self.look.tag != Tag.NEW_LINE:
             self.expr()
         self.block()
+
 
