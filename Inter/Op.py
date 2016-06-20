@@ -1,12 +1,8 @@
-import Expr
+from .Expr import Expr
 
-class Op(object):
+class Op(Expr):
     def __init__(self, tok, p):
-        self.tok = tok
-        self.p = p
+        super().__init__(tok, p)
 
     def reduce(self):
-        self.x = gen()
-        self.t = Temp(type)
-        emit(str(t) + " = " + str(x))
-        return t
+        pass
