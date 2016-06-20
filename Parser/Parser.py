@@ -99,7 +99,7 @@ class Parser(object):
             while self.look.tag != Tag.END_PAREN:
                 self.expr()
             self.match(Tag.END_PAREN)
-            self.stmt()
+            #self.stmt()
         elif self.look.tag == Tag.LIST:
             self.match(Tag.LIST)
             self.expr()
