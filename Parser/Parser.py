@@ -90,19 +90,15 @@ class Parser(object):
         if self.look.tag == Tag.NUM:
             e = self.look
             self.match(Tag.NUM)
-            return e
-            # self.expr()
         elif self.look.tag == Tag.REAL:
-            return self.look
+            e = self.look
             self.match(Tag.REAL)
-            self.expr()
         elif self.look.tag == Tag.STRING:
-            return self.look
+            e = self.look
             self.match(Tag.STRING)
-            self.expr()
         elif self.look.tag == Tag.BOOL:
+            e = self.look
             self.match(Tag.BOOL)
-            self.expr()
         elif self.look.tag == Tag.ADD or self.look.tag == Tag.MINUS:
             return self.mathop()
         elif self.look.tag == Tag.MULT or self.look.tag == Tag.DIV:
@@ -114,12 +110,13 @@ class Parser(object):
             self.match(Tag.LIST)
             self.expr()
         elif self.look.tag == Tag.ID:
-            return self.look
+            e = self.look
             self.match(Tag.ID)
-            self.expr()
         elif self.look.tag == Tag.APPEND:
             self.match(Tag.APPEND)
             self.expr()
+
+        return e
 
     def stmt(self):
         if self.look.tag == Tag.NEW_LINE:
