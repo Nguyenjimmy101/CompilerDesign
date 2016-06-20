@@ -58,6 +58,92 @@ class Parser(object):
         elif self.look.tag == Tag.NE:
             self.match(Tag.NE)
 
+    def mathop(self):
+        if self.look.tag == Tag.ADD:
+            self.match(Tag.ADD)
+        elif self.look.tag == Tag.MINUS:
+            self.match(Tag.MINUS)
+        elif self.look.tag == Tag.MULT:
+            self.match(Tag.MULT)
+        elif self.look.tag == Tag.DIV:
+            self.match(Tag.DIV)
+
+    def stmt(self):
+        if self.look.tag == Tag.ASSIGN:
+            self.assign()
+        elif self.look.tag == Tag.DEF:
+            self.function()
+        elif self.look.tag == Tag.FUN:
+            self.lambd()
+        elif self.look.tag == Tag.IF or self.look.tag == Tag.WHILE:
+            self.loop()
+
+    def assign(self):
+        self.match(Tag.ASSIGN)
+        self.match(Tag.ID)
+        self.expr()
+
+    def value(self):
+        if self.look.tag == Tag.NUM:
+            self.match(Tag.NUM)
+        elif self.look.tag == Tag.BOOL:
+            self.match(Tag.BOOL)
+        else:
+            self.iterable()
+
+    def lambd(self):
+        self.match(Tag.FUN)
+        while self.look.tag != Tag.NEW_LINE:
+            self.expr()
+        self.block()
+
+    def function(self):
+        self.match(Tag.DEF)
+        self.match(Tag.ID)
+        # Arguments
+        while self.look.tag != Tag.NEW_LINE:
+            self.match(Tag.ID)
+        self.block()
+
+    def loop(self):
+        if self.look.tag == Tag.WHILE:
+            self.forloop()
+        elif self.look.tag == Tag.FOR:
+            self.match(Tag.FOR)
+
+    def forloop(self):
+        self.match(Tag.FOR)
+        self.match(Tag.ID)
+        self.iterable()
+        self.block()
+
+    def iterable(self):
+        if self.look.tag == Tag.STRING:
+            self.match(Tag.STRING)
+            self.expr()
+        elif self.look.tag == Tag.LIST:
+            self.lists()
+        elif self.look.tag == Tag.ID:
+            self.match(Tag.ID)
+        else:
+            self.expression()
+
+    def lists(self):
+        self.match(Tag.LIST)
+
+    def expression(self):
+        if self.look.tag == Tag.BEGIN_PAREN:
+            self.match(Tag.BEGIN_PAREN)
+            self.math_expr()
+            self.match(Tag.END_PAREN)
+        else:
+            self.math_expr()
+
+    def math_expr(self):
+        self.mathop()
+        self.value()
+
+"""
     def expr(self):
         if self.look.tag == Tag.NUM:
             self.match(Tag.NUM)
@@ -194,4 +280,4 @@ class Parser(object):
         while self.look.tag != Tag.NEW_LINE:
             self.expr()
         self.block()
-
+"""
