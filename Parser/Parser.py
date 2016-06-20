@@ -127,12 +127,17 @@ class Parser(object):
             self.expr()
         elif self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
+            self.stmt()
         elif self.look.tag == Tag.PRINT:
             self.match(Tag.PRINT)
             self.stmt()
         elif self.look.tag == Tag.PRINTERR:
             self.match(Tag.PRINTERR)
             self.stmt()
+        elif self.look.tag == Tag.EOF:
+            # Exit on EOF
+            raise SystemExit(0)
+            # self.match(Tag.EOF)
         else:
             self.match(Tag.ID)
             self.move()
