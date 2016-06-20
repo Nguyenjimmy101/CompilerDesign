@@ -1,15 +1,25 @@
-from treelib import node, tree
+from treelib import Node, Tree
+from pprint import pformat
 
-
-# tree
 
 class Env:
-    def __init__(self, root, root_id):
-        self.new_tree = tree()
-        self.new_tree.create_node(root, root_id)
+    def __init__(self, prev=None, root=False):
+        self.prev = prev
+        self.table = dict()
 
-    def add_node(self, node, node_id, parent_id):
-        self.new_tree.create_node(node, node_id, parent=parent_id)
+        if root:
+            self.table = {'root': {}}
 
-    def show_tree(self):
-        self.new_tree.show()
+    def put(self, token, _id):
+        self.table[token] = _id
+
+    def get(self, token):
+        e = self
+        while e != None:
+            found = e.table.get(token)
+            if found:
+                return found
+            e = e.prev
+
+    def __str__(self):
+        return pformat(self.table)
