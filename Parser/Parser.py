@@ -2,6 +2,8 @@ from LexicalAnalyzer import Token
 from LexicalAnalyzer.Lexer import Lexer
 from LexicalAnalyzer.Tag import Tag
 
+from Inter import *
+
 
 class Parser(object):
     lex = None
