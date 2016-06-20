@@ -3,6 +3,8 @@ from LexicalAnalyzer.Lexer import Lexer
 from LexicalAnalyzer.Tag import Tag
 from LexicalAnalyzer.Word import Word
 
+from pprint import pprint
+
 from symbols.Env import Env
 
 from Inter import *
@@ -22,9 +24,14 @@ class Parser(object):
         self.move()
 
     def start(self):
-        print(self.stmts())
+        # print(self.stmts().stmt1.block)
+        s = self.stmts()
+        print(str(s.__dict__))
 
     def stmts(self):
+        if isinstance(self.look, str) and len(self.look) == 0:
+            return Stmt.null
+
         if self.look.tag != Tag.EOF:
             s = self.stmt()
 
@@ -38,12 +45,12 @@ class Parser(object):
 
     def move(self):
         self.look = self.lex.scan()
+        self.indent = self.lex.indent
 
     def match(self, tag):
         if self.look.tag == tag:
             # print(self.indent, self.look)
             self.move()
-            self.indent = self.lex.indent
         else:
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
 
@@ -51,16 +58,19 @@ class Parser(object):
         oldindent = self.indent
         self.match(Tag.NEW_LINE)
 
-        if self.indent != oldindent + 2:
-            raise SyntaxError('Indent is not correct')
+        # if self.indent != oldindent + 2:
+            # raise SyntaxError('Indent is not correct')
 
-        self.stmt()
-        self.match(Tag.NEW_LINE)
+        return self.block_body(oldindent)
 
-        while self.indent != oldindent:
-            self.stmt()
-            self.match(Tag.NEW_LINE)
-        print('end block')
+    def block_body(self, oldindent):
+        if self.indent != oldindent:
+            s = self.stmt()
+            # import ipdb; ipdb.set_trace()
+            return Seq(s, self.block_body(oldindent))
+        else:
+            s = self.stmt()
+            return Seq(s, Stmt.null)
 
     def relop(self):
         if self.look.tag == Tag.LT:
@@ -149,7 +159,7 @@ class Parser(object):
         elif self.look.tag == Tag.ASSIGN:
             return self.assign()
         elif self.look.tag == Tag.DEF:
-            self.function()
+            return self.function()
         elif self.look.tag == Tag.RETURN:
             self.match(Tag.RETURN)
             self.expr()
@@ -209,12 +219,15 @@ class Parser(object):
 
     def function(self):
         self.match(Tag.DEF)
+        name = self.look
         self.match(Tag.ID)
 
+        args = []
         # Arguments
         while self.look.tag != Tag.NEW_LINE:
+            args.append(self.look)
             self.match(Tag.ID)
-        self.block()
+        return Function(name, args, self.block())
 
     def lambd(self):
         self.match(Tag.FUN)
