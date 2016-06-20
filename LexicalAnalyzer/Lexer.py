@@ -83,10 +83,10 @@ class Lexer(object):
             return Words.BEGIN_PAREN
 
         # IDENTIFIERS
-        if self.peek.isalpha():
+        if self.peek.isalpha() or self.peek == '_':
             identifier = ''
             while True:
-                if self.peek.isalnum():
+                if self.peek.isalnum() or self.peek == '_':
                     identifier += self.peek
                     self._readch()
                 else:
