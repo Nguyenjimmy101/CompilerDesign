@@ -144,8 +144,11 @@ class Parser(object):
             self.stmt()
         elif self.look.tag == Tag.COMMENT:
             self.match(Tag.COMMENT)
+        elif self.look.tag == Tag.FUN:
+            self.lambd()
         elif self.look.tag == Tag.EOF:
             # Exit on EOF
+            print("End of the file")
             raise SystemExit(0)
             # self.match(Tag.EOF)
         else:
@@ -186,6 +189,9 @@ class Parser(object):
             self.match(Tag.ID)
         self.block()
 
-
-
+    def lambd(self):
+        self.match(Tag.FUN)
+        while self.look.tag != Tag.NEW_LINE:
+            self.expr()
+        self.block()
 
