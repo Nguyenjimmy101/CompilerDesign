@@ -5,3 +5,5 @@ from Inter.Else import Else
 from Inter.Expr import Expr
 from Inter.Id import Id
 from Inter.Op import Op
+from Inter.Arith import Arith
+from Inter.Seq import Seq

@@ -10,7 +10,7 @@ else
 
 # This is a comment
 
-if == (list 1 2 3 "Hello") (append (list 1 2 3) 'Hello') # Comment at the end of the if
+if == (list 1 2 3 "Hello") (append (list 1 2 3) 'Hello')
   print 'Equal!'
 
 def loopadder a b
