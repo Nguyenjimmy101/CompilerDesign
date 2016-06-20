@@ -1,6 +1,9 @@
 from LexicalAnalyzer import Token
 from LexicalAnalyzer.Lexer import Lexer
 from LexicalAnalyzer.Tag import Tag
+from LexicalAnalyzer.Word import Word
+
+from symbols.Env import Env
 
 from Inter import *
 
@@ -11,21 +14,34 @@ class Parser(object):
     top = None
     indent = 0
     used = 0
+    table = {}
 
     def __init__(self, stream):
+        self.top = Env(root=True)
         self.lex = Lexer(stream)
         self.move()
 
     def start(self):
-        while self.look.tag != Tag.EOF:
-            self.stmt()
+        print(self.stmts())
+
+    def stmts(self):
+        if self.look.tag != Tag.EOF:
+            s = self.stmt()
+
+            if isinstance(s, Word) and s.tag == Tag.EOF:
+                return Stmt.null
+
+            return Seq(s, self.stmts())
+        else:
+            print('eof')
+            return Stmt.null
 
     def move(self):
         self.look = self.lex.scan()
 
     def match(self, tag):
         if self.look.tag == tag:
-            print(self.indent, self.look)
+            # print(self.indent, self.look)
             self.move()
             self.indent = self.lex.indent
         else:
@@ -61,51 +77,44 @@ class Parser(object):
             self.match(Tag.NE)
 
     def mathop(self):
-        if self.look.tag == Tag.ADD:
-            self.match(Tag.ADD)
-            self.expr()
-            self.expr()
-        elif self.look.tag == Tag.MINUS:
-            self.match(Tag.MINUS)
-            self.expr()
-        elif self.look.tag == Tag.MULT:
-            self.match(Tag.MULT)
-            self.expr()
-        elif self.look.tag == Tag.DIV:
-            self.match(Tag.DIV)
-            self.expr()
+        token = self.look
+        self.move()
+        return Arith(token, self.expr(), self.expr())
 
     def expr(self):
+        if self.look.tag == Tag.NEW_LINE:
+            self.match(Tag.NEW_LINE)
+
+        e = None
+
         if self.look.tag == Tag.NUM:
+            e = self.look
             self.match(Tag.NUM)
-            self.expr()
+            return e
+            # self.expr()
         elif self.look.tag == Tag.REAL:
+            return self.look
             self.match(Tag.REAL)
             self.expr()
         elif self.look.tag == Tag.STRING:
+            return self.look
             self.match(Tag.STRING)
             self.expr()
         elif self.look.tag == Tag.BOOL:
             self.match(Tag.BOOL)
             self.expr()
         elif self.look.tag == Tag.ADD or self.look.tag == Tag.MINUS:
-            self.mathop()
+            return self.mathop()
         elif self.look.tag == Tag.MULT or self.look.tag == Tag.DIV:
-            self.mathop()
-        elif self.look.tag == Tag.NEW_LINE:
-            self.match(Tag.NEW_LINE)
-            self.stmt()
+            return self.mathop()
+            # self.stmt()
         elif self.look.tag == Tag.BEGIN_PAREN:
-            self.match(Tag.BEGIN_PAREN)
-            self.expr()
-            while self.look.tag != Tag.END_PAREN:
-                self.expr()
-            self.match(Tag.END_PAREN)
-            #self.stmt()
+            return self.parens()
         elif self.look.tag == Tag.LIST:
             self.match(Tag.LIST)
             self.expr()
         elif self.look.tag == Tag.ID:
+            return self.look
             self.match(Tag.ID)
             self.expr()
         elif self.look.tag == Tag.APPEND:
@@ -113,6 +122,9 @@ class Parser(object):
             self.expr()
 
     def stmt(self):
+        if self.look.tag == Tag.NEW_LINE:
+            self.match(Tag.NEW_LINE)
+
         if self.look.tag == Tag.IF:
             self.match(Tag.IF)
             self.relop()
@@ -138,15 +150,12 @@ class Parser(object):
             self.expr()
             self.block()
         elif self.look.tag == Tag.ASSIGN:
-            self.assign()
+            return self.assign()
         elif self.look.tag == Tag.DEF:
             self.function()
         elif self.look.tag == Tag.RETURN:
             self.match(Tag.RETURN)
             self.expr()
-        elif self.look.tag == Tag.NEW_LINE:
-            self.match(Tag.NEW_LINE)
-            self.stmt()
         elif self.look.tag == Tag.PRINT or self.look.tag == Tag.PRINTERR:
             self.print()
         elif self.look.tag == Tag.FUN:
@@ -159,17 +168,37 @@ class Parser(object):
             self.expr()
         elif self.look.tag == Tag.EOF:
             # Exit on EOF
-            print("End of the file")
-            raise SystemExit(0)
-            # self.match(Tag.EOF)
+            # print("End of the file")
+            # raise SystemExit(0)
+            self.match(Tag.EOF)
+            return self.look
         else:
             self.match(Tag.ID)
             self.move()
 
     def assign(self):
         self.match(Tag.ASSIGN)
+        _id = self.look
         self.match(Tag.ID)
-        self.expr()
+        expr = self.expr()
+        self.move()
+        return Assign(_id, expr)
+
+    def is_arith(self, token):
+        return self.look.tag in (
+            Tag.ADD,
+            Tag.MINUS,
+            Tag.MULT,
+            Tag.DIV
+        )
+
+    def parens(self):
+        self.match(Tag.BEGIN_PAREN)
+        token = self.look
+        # self.move()
+        p = Paren(token, self.expr())
+        self.match(Tag.END_PAREN)
+        return p
 
     def print(self):
         if self.look.tag == Tag.PRINT:
