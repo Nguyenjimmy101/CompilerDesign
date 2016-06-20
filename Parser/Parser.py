@@ -58,16 +58,6 @@ class Parser(object):
         elif self.look.tag == Tag.NE:
             self.match(Tag.NE)
 
-    def mathop(self):
-        if self.look.tag == Tag.ADD:
-            self.match(Tag.ADD)
-        elif self.look.tag == Tag.MINUS:
-            self.match(Tag.MINUS)
-        elif self.look.tag == Tag.MULT:
-            self.match(Tag.MULT)
-        elif self.look.tag == Tag.DIV:
-            self.match(Tag.DIV)
-
     def stmt(self):
         if self.look.tag == Tag.ASSIGN:
             self.assign()
@@ -77,12 +67,10 @@ class Parser(object):
             self.lambd()
         elif self.look.tag == Tag.IF or self.look.tag == Tag.WHILE:
             self.loop()
+        elif self.look.tag == Tag.PRINTERR or self.look.tag == Tag.PRINT:
+            self.print_statement()
 
-    def assign(self):
-        self.match(Tag.ASSIGN)
-        self.match(Tag.ID)
-        self.expr()
-
+    # Data Types
     def value(self):
         if self.look.tag == Tag.NUM:
             self.match(Tag.NUM)
@@ -90,32 +78,6 @@ class Parser(object):
             self.match(Tag.BOOL)
         else:
             self.iterable()
-
-    def lambd(self):
-        self.match(Tag.FUN)
-        while self.look.tag != Tag.NEW_LINE:
-            self.expr()
-        self.block()
-
-    def function(self):
-        self.match(Tag.DEF)
-        self.match(Tag.ID)
-        # Arguments
-        while self.look.tag != Tag.NEW_LINE:
-            self.match(Tag.ID)
-        self.block()
-
-    def loop(self):
-        if self.look.tag == Tag.WHILE:
-            self.forloop()
-        elif self.look.tag == Tag.FOR:
-            self.match(Tag.FOR)
-
-    def forloop(self):
-        self.match(Tag.FOR)
-        self.match(Tag.ID)
-        self.iterable()
-        self.block()
 
     def iterable(self):
         if self.look.tag == Tag.STRING:
@@ -130,6 +92,16 @@ class Parser(object):
 
     def lists(self):
         self.match(Tag.LIST)
+        self.match(Tag.ID)
+        self.value()
+
+    # Add Map Later
+
+    # Operators
+    def assign(self):
+        self.match(Tag.ASSIGN)
+        self.match(Tag.ID)
+        self.expr()
 
     def expression(self):
         if self.look.tag == Tag.BEGIN_PAREN:
@@ -141,7 +113,96 @@ class Parser(object):
 
     def math_expr(self):
         self.mathop()
+        while self.look.tag != Tag.NEW_LINE:
+            self.value()
+
+    def mathop(self):
+        if self.look.tag == Tag.ADD:
+            self.match(Tag.ADD)
+        elif self.look.tag == Tag.MINUS:
+            self.match(Tag.MINUS)
+        elif self.look.tag == Tag.MULT:
+            self.match(Tag.MULT)
+        elif self.look.tag == Tag.DIV:
+            self.match(Tag.DIV)
+
+    # Control Structures
+    def loop(self):
+        if self.look.tag == Tag.WHILE:
+            self.whileloop()
+        elif self.look.tag == Tag.FOR:
+            self.forloop()
+
+    def whileloop(self):
+        self.match(Tag.WHILE)
+        self.relop()
         self.value()
+        self.block()
+
+    def forloop(self):
+        self.match(Tag.FOR)
+        self.match(Tag.ID)
+        self.iterable()
+        self.block()
+
+    def if_struct(self):
+        self.match(Tag.IF)
+        self.comparison_func()
+        if self.look.tag == Tag.ELIF:
+            self.elif_struct()
+        if self.look.tag == Tag.ELSE:
+            self.else_struct()
+
+    def elif_struct(self):
+        self.match(Tag.ELIF)
+        self.comparison_func()
+        self.block()
+        if self.look.tag == Tag.ELIF:
+            self.elif_struct()
+        if self.look.tag == Tag.ELSE:
+            self.else_struct()
+
+    def else_struct(self):
+        self.match(Tag.ELSE)
+        self.block()
+
+    def comparison_func(self):
+        pass
+
+    # Block of code
+    def function(self):
+        self.match(Tag.DEF)
+        self.match(Tag.ID)
+        # Arguments
+        while self.look.tag != Tag.NEW_LINE:
+            self.match(Tag.ID)
+        self.block()
+        if self.look.tag == Tag.RETURN:
+            self.match(Tag.RETURN)
+
+    def returned(self):
+        self.match(Tag.RETURN)
+        self.value()
+
+    def lambd(self):
+        self.match(Tag.FUN)
+        while self.look.tag != Tag.NEW_LINE:
+            self.match(Tag.ID)
+        self.block()
+
+    # IO
+    def print(self):
+        if self.look.tag == Tag.PRINT:
+            self.match(Tag.PRINT)
+        elif self.look.tag == Tag.PRINTERR:
+            self.match(Tag.PRINTERR)
+        else:
+            print("Error")
+
+    def print_statement(self):
+        self.print()
+        self.value()
+
 
 """
     def expr(self):
