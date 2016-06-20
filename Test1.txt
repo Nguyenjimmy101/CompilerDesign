@@ -1,7 +1,7 @@
-def multiply a b
-  = result 0
-  for i range b
-    = result (+ result a)
-  return result
+= before 1
+def function a b
+  if == b 2
+    = x false
 
-print multiply 1 2
+  = shouldBeAfterIf 0
+= after 2

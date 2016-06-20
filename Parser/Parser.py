@@ -64,15 +64,26 @@ class Parser(object):
         return self.block_body(oldindent)
 
     def block_body(self, oldindent):
+        # import ipdb; ipdb.set_trace()
+        # print(self.indent, oldindent)
+        try:
+            if self.look.tag == Tag.NEW_LINE:
+                self.match(Tag.NEW_LINE)
+        except:
+            pass
+
         if self.indent != oldindent:
             s = self.stmt()
-            # import ipdb; ipdb.set_trace()
-            return Seq(s, self.block_body(oldindent))
+            seq = Seq(s, self.block_body(oldindent))
+            return seq
         else:
-            s = self.stmt()
-            return Seq(s, Stmt.null)
+            # s = self.stmt()
+            # seq = Seq(s, Stmt.null)
+            # print(seq)
+            return Stmt.null
 
     def relop(self):
+        op = self.look
         if self.look.tag == Tag.LT:
             self.match(Tag.LT)
         elif self.look.tag == Tag.GT:
@@ -85,6 +96,10 @@ class Parser(object):
             self.match(Tag.EQ)
         elif self.look.tag == Tag.NE:
             self.match(Tag.NE)
+        else:
+            raise SyntaxError('Invalid conditional operator: %s' % self.look)
+
+        return op
 
     def mathop(self):
         token = self.look
@@ -133,20 +148,16 @@ class Parser(object):
             self.match(Tag.NEW_LINE)
 
         if self.look.tag == Tag.IF:
-            self.match(Tag.IF)
-            self.relop()
-            self.expr()
-            self.expr()
-            self.block()
-        elif self.look.tag == Tag.ELSE:
-            self.match(Tag.ELSE)
-            self.block()
-        elif self.look.tag == Tag.ELIF:
-            self.match(Tag.ELIF)
-            self.relop()
-            self.expr()
-            self.expr()
-            self.block()
+            return self.if_stmt()
+        # elif self.look.tag == Tag.ELSE:
+            # self.match(Tag.ELSE)
+            # self.block()
+        # elif self.look.tag == Tag.ELIF:
+            # self.match(Tag.ELIF)
+            # self.relop()
+            # self.expr()
+            # self.expr()
+            # self.block()
         elif self.look.tag == Tag.WHILE:
             self.match(Tag.WHILE)
             self.expr()
@@ -179,9 +190,13 @@ class Parser(object):
             # raise SystemExit(0)
             self.match(Tag.EOF)
             return self.look
-        else:
-            self.match(Tag.ID)
-            self.move()
+        # else:
+            # self.match(Tag.ID)
+            # self.move()
+
+    def if_stmt(self):
+        self.match(Tag.IF)
+        return If(self.relop(), self.expr(), self.expr(), self.block())
 
     def assign(self):
         self.match(Tag.ASSIGN)
@@ -227,7 +242,9 @@ class Parser(object):
         while self.look.tag != Tag.NEW_LINE:
             args.append(self.look)
             self.match(Tag.ID)
-        return Function(name, args, self.block())
+        block = self.block()
+        # print(block)
+        return Function(name, args, block)
 
     def lambd(self):
         self.match(Tag.FUN)
