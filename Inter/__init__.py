@@ -7,3 +7,5 @@ from Inter.Id import Id
 from Inter.Op import Op
 from Inter.Arith import Arith
 from Inter.Seq import Seq
+from Inter.Assign import Assign
+from Inter.Paren import Paren
