@@ -89,6 +89,12 @@ class Parser(object):
                 self.expr()
         elif self.look.tag == Tag.END_PAREN:
             self.match(Tag.END_PAREN)
+        elif self.look.tag == Tag.LIST:
+            self.match(Tag.LIST)
+            self.expr()
+        elif self.look.tag == Tag.COMMENT:
+            self.match(Tag.COMMENT)
+            self.expr()
         else:
             self.match(Tag.ID)
             self.expr()
@@ -130,10 +136,14 @@ class Parser(object):
             self.stmt()
         elif self.look.tag == Tag.PRINT:
             self.match(Tag.PRINT)
+            self.expr()
             self.stmt()
         elif self.look.tag == Tag.PRINTERR:
             self.match(Tag.PRINTERR)
+            self.expr()
             self.stmt()
+        elif self.look.tag == Tag.COMMENT:
+            self.match(Tag.COMMENT)
         elif self.look.tag == Tag.EOF:
             # Exit on EOF
             raise SystemExit(0)
