@@ -226,11 +226,11 @@ class Parser(object):
         if self.look.tag == Tag.PRINT:
             self.match(Tag.PRINT)
             self.expr()
-            self.stmt()
+            #self.stmt()
         else:
             self.match(Tag.PRINTERR)
             self.expr()
-            self.stmt()
+            #self.stmt()
 
     def function(self):
         self.match(Tag.DEF)
