@@ -17,6 +17,7 @@ class Word(Token):
 
 
 class Words(object):
+    NONE = Word('', Tag.BASIC)
     EQ = Word('==', Tag.EQ)
     NE = Word('!=', Tag.NE)
     LE = Word('<=', Tag.LE)

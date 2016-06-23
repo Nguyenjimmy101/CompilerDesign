@@ -1,5 +1,3 @@
-import sys
-
 from LexicalAnalyzer.Bool import Bool
 from LexicalAnalyzer.Comment import Comment
 from LexicalAnalyzer.Num import Num
@@ -16,6 +14,7 @@ class Lexer(object):
     _skip = False
     indent = 0
     finished_indent = False
+    recently_newline = False
     words = {
         'if': Tag.IF,
         'else': Tag.ELSE,
@@ -56,12 +55,18 @@ class Lexer(object):
             if self.peek == '\n':
                 # import ipdb; ipdb.set_trace()
                 self.line += 1
-                self.indent = 0
                 self.finished_indent = False
+                self.recently_newline = True
                 return Words.NEW_LINE
             elif self.peek == ' ' and self.finished_indent == False:
+                if self.recently_newline:
+                    self.indent = 0
+                    self.recently_newline = False
                 self.indent += 1
             elif self.peek != ' ' and self.peek != '\t':
+                if self.recently_newline:
+                    self.indent = 0
+                    self.recently_newline = False
                 self.finished_indent = True
                 break
             elif self.peek == '':

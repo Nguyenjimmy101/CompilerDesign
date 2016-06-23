@@ -1,19 +1,20 @@
 from .Node import Node
 
 
-class Stmt(Node):
-    after = 0
-
-    def gen(self, before, after):
-        pass
-
-
-class Null(Stmt):
+class Null:
     def __init__(self):
         self.type = 'NULL'
 
     def __repr__(self):
         return 'NULL'
 
-Stmt.null = Null()
-Stmt.enclosing = Stmt.null
+
+class Stmt(Node):
+    null = Null()
+    after = 0
+
+    def gen(self, before, after):
+        pass
+
+# Stmt.null = Null()
+# Stmt.enclosing = Stmt.null
