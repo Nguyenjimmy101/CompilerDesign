@@ -44,7 +44,7 @@ class Parser(object):
 
     def match(self, tag):
         if self.look.tag == tag:
-            # print(self.indent, self.look)
+            #print(self.indent, self.look)
             self.move()
         else:
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
@@ -219,12 +219,12 @@ class Parser(object):
 
     def else_stmt(self):
         self.match(Tag.ELSE)
-        ifStmt = self.if_stmt()
+        #ifstmt = self.if_stmt()
         indent = self.indent
         if self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
         b = self.block(indent)
-        return Else(ifStmt, b)
+        return Else(b)
 
     def assign(self):
         self.match(Tag.ASSIGN)
