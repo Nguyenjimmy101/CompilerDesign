@@ -196,7 +196,35 @@ class Parser(object):
         if self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
         b = self.block(indent)
+        if self.look.tag == Tag.ELIF:
+            self.elif_stmt()
+        elif self.look.tag == Tag.ELSE:
+            self.else_stmt()
         return If(op, expr1, expr2, b)
+
+    def elif_stmt(self):
+        self.match(Tag.ELIF)
+        indent = self.indent
+        op = self.relop()
+        expr1 = self.expr()
+        expr2 = self.expr()
+        if self.look.tag == Tag.NEW_LINE:
+            self.match(Tag.NEW_LINE)
+        b = self.block(indent)
+        if self.look.tag == Tag.ELIF:
+            self.elif_stmt()
+        elif self.look.tag == Tag.ELSE:
+            self.else_stmt()
+        return Elif(op, expr1, expr2, b)
+
+    def else_stmt(self):
+        self.match(Tag.ELSE)
+        ifStmt = self.if_stmt()
+        indent = self.indent
+        if self.look.tag == Tag.NEW_LINE:
+            self.match(Tag.NEW_LINE)
+        b = self.block(indent)
+        return Else(ifStmt, b)
 
     def assign(self):
         self.match(Tag.ASSIGN)
