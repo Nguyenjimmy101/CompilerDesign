@@ -252,11 +252,23 @@ class Parser(object):
     def print(self):
         if self.look.tag == Tag.PRINT:
             self.match(Tag.PRINT)
-            self.expr()
+            if self.look.tag == Tag.BEGIN_PAREN:
+                self.match(Tag.BEGIN_PAREN)
+                while self.look.tag != Tag.END_PAREN:
+                    self.expr()
+                self.match(Tag.END_PAREN)
+            else:
+                self.expr()
             #self.stmt()
         else:
             self.match(Tag.PRINTERR)
-            self.expr()
+            if self.look.tag == Tag.BEGIN_PAREN:
+                self.match(Tag.BEGIN_PAREN)
+                while self.look.tag != Tag.END_PAREN:
+                    self.expr()
+                self.match(Tag.END_PAREN)
+            else:
+                self.expr()
             #self.stmt()
 
     def function(self):
