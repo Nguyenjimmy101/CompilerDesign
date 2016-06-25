@@ -44,7 +44,7 @@ class Parser(object):
 
     def match(self, tag):
         if self.look.tag == tag:
-            #print(self.indent, self.look)
+            print(self.indent, self.look)
             self.move()
         else:
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
@@ -172,8 +172,7 @@ class Parser(object):
         elif self.look.tag == Tag.FUN:
             self.lambd()
         elif self.look.tag == Tag.COMMENT:
-            self.match(Tag.COMMENT)
-            # self.stmt()
+            self.comment()
         elif self.look.tag == Tag.APPEND:
             self.match(Tag.APPEND)
             self.expr()
@@ -281,3 +280,11 @@ class Parser(object):
         while self.look.tag != Tag.NEW_LINE:
             self.expr()
         self.block()
+
+    def comment(self):
+        self.match(Tag.COMMENT)
+        if self.look.tag == Tag.COMMENT:
+            self.comment()
+        if self.look.tag == Tag.NEW_LINE:
+            self.match(Tag.NEW_LINE)
+            # self.stmt()
