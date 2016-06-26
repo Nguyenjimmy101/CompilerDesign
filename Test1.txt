@@ -1,5 +1,11 @@
 def function x
   if == true false
-    = afterIf (+ 2 2)
+    = inIf (+ 2 2)
+  elif == 2 5
+    = firstElif 2
+  elif == true true
+    = secondElif 3
+  else
+    = inElse 0
 
 = afterIf 0
