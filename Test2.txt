@@ -1,0 +1,17 @@
+if == 1 1.0
+  print "Yes, they're equal"
+else
+  printerr "There's something wrong"
+
+= someVariable true
+
+= otherVariable (+ 1 2)
+
+# This is a comment
+
+def loopadder a b
+  = c 0
+  for i range b
+    = c (+ a c)
+  return c
+print (loopadder 2 5)

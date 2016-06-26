@@ -257,25 +257,22 @@ class Parser(object):
 
     def print(self):
         if self.look.tag == Tag.PRINT:
-            self.match(Tag.PRINT)
-            if self.look.tag == Tag.BEGIN_PAREN:
-                self.match(Tag.BEGIN_PAREN)
-                while self.look.tag != Tag.END_PAREN:
-                    self.expr()
-                self.match(Tag.END_PAREN)
-            else:
-                self.expr()
-            #self.stmt()
+            self.printed(Tag.PRINT)
         else:
-            self.match(Tag.PRINTERR)
-            if self.look.tag == Tag.BEGIN_PAREN:
-                self.match(Tag.BEGIN_PAREN)
-                while self.look.tag != Tag.END_PAREN:
-                    self.expr()
-                self.match(Tag.END_PAREN)
-            else:
+            self.printed(Tag.PRINTERR)
+
+    def printed(self, print_type):
+        self.match(print_type)
+        if self.look.tag == Tag.BEGIN_PAREN:
+            self.match(Tag.BEGIN_PAREN)
+            while self.look.tag != Tag.END_PAREN:
                 self.expr()
-            #self.stmt()
+            self.match(Tag.END_PAREN)
+        else:
+            self.expr()
+            while self.look.tag != Tag.NEW_LINE and self.look.tag != Tag.COMMENT:
+                self.expr()
+            #self.expr()
 
     def function(self):
         self.match(Tag.DEF)
