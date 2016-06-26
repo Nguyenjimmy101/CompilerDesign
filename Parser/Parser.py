@@ -194,12 +194,15 @@ class Parser(object):
         expr2 = self.expr()
         if self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
+
         b = self.block(indent)
+        _if = If(op, expr1, expr2, b)
+
         if self.look.tag == Tag.ELIF:
-            self.elif_stmt()
+            return ElifSeq(_if, self.elif_stmt())
         elif self.look.tag == Tag.ELSE:
-            self.else_stmt()
-        return If(op, expr1, expr2, b)
+            return self.else_stmt(_if)
+        return _if
 
     def elif_stmt(self):
         self.match(Tag.ELIF)
@@ -209,21 +212,24 @@ class Parser(object):
         expr2 = self.expr()
         if self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
-        b = self.block(indent)
-        if self.look.tag == Tag.ELIF:
-            self.elif_stmt()
-        elif self.look.tag == Tag.ELSE:
-            self.else_stmt()
-        return Elif(op, expr1, expr2, b)
 
-    def else_stmt(self):
+        b = self.block(indent)
+        _elif = Elif(op, expr1, expr2, b)
+
+        if self.look.tag == Tag.ELIF:
+            return ElifSeq(_elif, self.elif_stmt())
+        elif self.look.tag == Tag.ELSE:
+            return self.else_stmt(_elif)
+        return _elif
+
+    def else_stmt(self, if_stmt):
         self.match(Tag.ELSE)
-        #ifstmt = self.if_stmt()
+        # ifstmt = self.if_stmt()
         indent = self.indent
         if self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
         b = self.block(indent)
-        return Else(b)
+        return Else(if_stmt, b)
 
     def assign(self):
         self.match(Tag.ASSIGN)
