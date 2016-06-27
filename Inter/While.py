@@ -2,14 +2,13 @@ from LexicalAnalyzer.Tag import Tag
 from .Stmt import Stmt
 
 
-class If(Stmt):
-    def __init__(self, operator, expr1, expr2, block):
+class While(Stmt):
+    def __init__(self, op, expr, block):
         super().__init__()
-        self.operator = operator
-        self.expr1 = expr1
-        self.expr2 = expr2
+        self.op = op
+        self.iterator = iterator
         self.block = block
-        self.type = 'If'
+        self.type = 'While'
 
     def gen(self, before, after):
         pass

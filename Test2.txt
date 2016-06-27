@@ -11,7 +11,7 @@ else
 
 def loopadder a b
   = c 0
-  for i range b
+  for i (range b)
     = c (+ a c)
   return c
 print (loopadder 2 5)

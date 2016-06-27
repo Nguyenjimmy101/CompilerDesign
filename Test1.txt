@@ -8,4 +8,4 @@ def function x
   else
     = inElse 0
 
-= afterIf 0
+print (function 2)

@@ -12,3 +12,8 @@ from Inter.Assign import Assign
 from Inter.Paren import Paren
 from Inter.Function import Function
 from Inter.ElifSeq import ElifSeq
+from Inter.Print import Print
+from Inter.PrintErr import PrintErr
+from Inter.FunctionCall import FunctionCall
+from Inter.For import For
+from Inter.While import While

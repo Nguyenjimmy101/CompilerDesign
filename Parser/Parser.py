@@ -50,22 +50,14 @@ class Parser(object):
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
 
     def block(self, indent=None):
-        # self.match(Tag.NEW_LINE)
-
-        # if self.indent != oldindent + 2:
-        # raise SyntaxError('Indent is not correct')
-
         if indent is not None:
             return self.block_body(indent)
         else:
             return self.block_body(self.indent)
 
     def block_body(self, oldindent):
-        # import ipdb; ipdb.set_trace()
-        # print(self.indent, oldindent)
         try:
             while self.look.tag == Tag.NEW_LINE:
-                # if self.look.tag == Tag.NEW_LINE:
                 self.match(Tag.NEW_LINE)
         except:
             print('error', self.look)
@@ -149,30 +141,28 @@ class Parser(object):
         if self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
 
+        if isinstance(self.look, str) and len(self.look) == 0:
+            return Stmt.null
+
         if self.look.tag == Tag.IF:
             return self.if_stmt()
         elif self.look.tag == Tag.WHILE:
-            self.match(Tag.WHILE)
-            self.expr()
-            self.block()
+            return self.while_stmt()
         elif self.look.tag == Tag.FOR:
-            self.match(Tag.FOR)
-            self.match(Tag.ID)
-            self.expr()
-            self.block()
+            return self.for_stmt()
         elif self.look.tag == Tag.ASSIGN:
             return self.assign()
         elif self.look.tag == Tag.DEF:
             return self.function()
         elif self.look.tag == Tag.RETURN:
             self.match(Tag.RETURN)
-            self.expr()
+            return self.expr()
         elif self.look.tag == Tag.PRINT or self.look.tag == Tag.PRINTERR:
-            self.print()
+            return self.print()
         elif self.look.tag == Tag.FUN:
             self.lambd()
         elif self.look.tag == Tag.COMMENT:
-            self.comment()
+            return self.comment()
         elif self.look.tag == Tag.APPEND:
             self.match(Tag.APPEND)
             self.expr()
@@ -231,6 +221,21 @@ class Parser(object):
         b = self.block(indent)
         return Else(if_stmt, b)
 
+    def for_stmt(self):
+        self.match(Tag.FOR)
+        indent = self.indent
+        var = self.look
+        self.match(Tag.ID)
+        expr = self.expr()
+        return For(var, expr, self.block(indent))
+
+    def while_stmt(self):
+        self.match(Tag.WHILE)
+        indent = self.indent
+        op = self.relop()
+        expr = self.expr()
+        return While(op, expr, self.block(indent))
+
     def assign(self):
         self.match(Tag.ASSIGN)
         _id = self.look
@@ -250,29 +255,25 @@ class Parser(object):
     def parens(self):
         self.match(Tag.BEGIN_PAREN)
         token = self.look
-        # self.move()
-        p = Paren(token, self.expr())
-        self.match(Tag.END_PAREN)
-        return p
+        if self.is_arith(token):
+            p = Paren(token, self.expr())
+            self.match(Tag.END_PAREN)
+            return p
+        else:
+            self.match(Tag.ID)
+            exprs = []
+            while self.look.tag != Tag.END_PAREN:
+                exprs.append(self.expr())
+            self.match(Tag.END_PAREN)
+            return FunctionCall(token, exprs)
 
     def print(self):
         if self.look.tag == Tag.PRINT:
-            self.printed(Tag.PRINT)
+            self.match(Tag.PRINT)
+            return Print(self.expr())
         else:
-            self.printed(Tag.PRINTERR)
-
-    def printed(self, print_type):
-        self.match(print_type)
-        if self.look.tag == Tag.BEGIN_PAREN:
-            self.match(Tag.BEGIN_PAREN)
-            while self.look.tag != Tag.END_PAREN:
-                self.expr()
-            self.match(Tag.END_PAREN)
-        else:
-            self.expr()
-            while self.look.tag != Tag.NEW_LINE and self.look.tag != Tag.COMMENT:
-                self.expr()
-            #self.expr()
+            self.match(Tag.PRINTERR)
+            return PrintErr(self.expr())
 
     def function(self):
         self.match(Tag.DEF)
