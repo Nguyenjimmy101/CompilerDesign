@@ -10,10 +10,11 @@ class Tag:
     STRING = 280
     BOOL = 283
 
-    KEY_SEPARATOR = 285
+    TYPE_SEPARATOR = 285
     NEW_LINE = 2
     EOF = -1
 
+    TYPE = 253
     AND = 256
     BASIC = 257
     BREAK = 258

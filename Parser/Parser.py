@@ -8,7 +8,7 @@ from symbols.Env import Env
 class Parser(object):
     lex = None
     look = None
-    top = None
+    top = Env(root=True)
     indent = 0
     used = 0
     table = {}
@@ -44,16 +44,21 @@ class Parser(object):
 
     def match(self, tag):
         if self.look.tag == tag:
-            print(self.indent, self.look)
+            # print(self.indent, self.look)
             self.move()
         else:
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
 
-    def block(self, indent=None):
-        if indent is not None:
-            return self.block_body(indent)
-        else:
-            return self.block_body(self.indent)
+    def block(self, indent=None, envs=None):
+        saved = self.top
+        self.top = Env(self.top)
+        if envs:
+            for env in envs:
+                self.top.put(*env)
+        body = self.block_body(indent or self.indent)
+        block = Block(body, self.top)
+        self.top = saved
+        return block
 
     def block_body(self, oldindent):
         try:
@@ -129,8 +134,7 @@ class Parser(object):
             self.match(Tag.LIST)
             self.expr()
         elif self.look.tag == Tag.ID:
-            expr = self.look
-            self.match(Tag.ID)
+            return self._id()
         elif self.look.tag == Tag.APPEND:
             self.match(Tag.APPEND)
             self.expr()
@@ -167,9 +171,6 @@ class Parser(object):
             self.match(Tag.APPEND)
             self.expr()
         elif self.look.tag == Tag.EOF:
-            # Exit on EOF
-            # print("End of the file")
-            # raise SystemExit(0)
             self.match(Tag.EOF)
             return self.look
         else:
@@ -212,6 +213,19 @@ class Parser(object):
             return self.else_stmt(_elif)
         return _elif
 
+    def _id(self, type=None):
+        t = self.look
+        self.match(Tag.ID)
+        token = self.top.get(t.lexeme)
+        print(t.lexeme, self.top)
+        if not token:
+            raise ValueError('Variable %s does not exist' % t)
+
+        if type is not None and token != type:
+            raise TypeError('Variable %s expected to be %s' % (t, type))
+
+        return Id(t, type)
+
     def else_stmt(self, if_stmt):
         self.match(Tag.ELSE)
         # ifstmt = self.if_stmt()
@@ -227,7 +241,7 @@ class Parser(object):
         var = self.look
         self.match(Tag.ID)
         expr = self.expr()
-        return For(var, expr, self.block(indent))
+        return For(var, expr, self.block(indent, [[var.lexeme, None]]))
 
     def while_stmt(self):
         self.match(Tag.WHILE)
@@ -239,10 +253,11 @@ class Parser(object):
     def assign(self):
         self.match(Tag.ASSIGN)
         _id = self.look
+        self.top.put(_id.lexeme)
         self.match(Tag.ID)
         expr = self.expr()
         self.move()
-        return Assign(_id, expr)
+        return Assign(Id(_id, None), expr)
 
     def is_arith(self, token):
         return self.look.tag in (
@@ -260,7 +275,7 @@ class Parser(object):
             self.match(Tag.END_PAREN)
             return p
         else:
-            self.match(Tag.ID)
+            token = self._id()
             exprs = []
             while self.look.tag != Tag.END_PAREN:
                 exprs.append(self.expr())
@@ -280,16 +295,30 @@ class Parser(object):
         name = self.look
         self.match(Tag.ID)
 
+        self.match(Tag.TYPE_SEPARATOR)
+        type = self.look
+        self.match(Tag.TYPE)
+
+        func_env = [name.lexeme, '%sfunction' % type.lexeme]
+        self.top.put(*func_env)
+
+        envs = [func_env]
+
         indent = self.indent
-        args = []
         # Arguments
+        args = []
         while self.look.tag != Tag.NEW_LINE:
-            args.append(self.look)
+            argName = self.look
             self.match(Tag.ID)
-        self.match(Tag.NEW_LINE)
-        block = self.block(indent)
-        # print(block)
-        return Function(name, args, block)
+            self.match(Tag.TYPE_SEPARATOR)
+            argType = self.look
+            self.match(Tag.TYPE)
+            _id = Id(argName, argType)
+            args.append(_id)
+            envs.append([argName.lexeme, argType.lexeme])
+
+        block = self.block(indent, envs)
+        return Function(name, type, args, block)
 
     def lambd(self):
         self.match(Tag.FUN)

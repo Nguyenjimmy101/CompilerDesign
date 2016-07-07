@@ -101,6 +101,9 @@ class Lexer(object):
             if identifier in ('true', 'false'):
                 return Bool(identifier)
 
+            if identifier in ('int', 'bool', 'void', 'string', 'float'):
+                return Word(identifier, Tag.TYPE)
+
             try:
                 word = getattr(Words, identifier.upper())
                 if word:
@@ -113,9 +116,9 @@ class Lexer(object):
 
                 return word
 
-        # MAP KEY SEPARATOR
+        # TYPE SEPARATOR
         if self.peek == ':':
-            return Tag.KEY_SEPARATOR
+            return Word(':', Tag.TYPE_SEPARATOR)
 
         # NUMBERS
         if self.peek.isnumeric():

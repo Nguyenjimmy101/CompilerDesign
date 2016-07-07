@@ -1,11 +1,12 @@
-def function x
+def function:void x:int
+  = y 4
   if == true false
-    = inIf (+ 2 2)
-  elif == 2 5
+    = inIf (+ x 2)
+  elif == 2 y
     = firstElif 2
   elif == true true
-    = secondElif 3
+    = secondElif x
   else
-    = inElse 0
+    = inElse x
 
 print (function 2)
