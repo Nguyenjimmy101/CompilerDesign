@@ -21,7 +21,7 @@ class Env:
         return None
 
     def __str__(self):
-        return pformat(self.table)
+        return str(self.table)
 
     def __repr__(self):
-        return pformat(self.table)
+        return str(self.table)

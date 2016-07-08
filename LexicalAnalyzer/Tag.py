@@ -1,4 +1,5 @@
 class Tag:
+    VOID = 291
     COMMENT = 1
     LT = 250
     GT = 251

@@ -1,5 +1,6 @@
 def function:void x:int
-  = y 4
+  = t false
+  = y (+ 15 t)
   if == true false
     = inIf (+ x 2)
   elif == 2 y
@@ -9,4 +10,5 @@ def function:void x:int
   else
     = inElse x
 
+= y 'Hello'
 print (function 2)

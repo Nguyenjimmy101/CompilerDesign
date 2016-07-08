@@ -18,5 +18,5 @@ from Inter.FunctionCall import FunctionCall
 from Inter.For import For
 from Inter.While import While
 from Inter.Block import Block
-from Inter.Type import Type
+from Inter.Type import *
 from Inter.UnkownType import UnknownType

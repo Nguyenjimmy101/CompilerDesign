@@ -2,6 +2,10 @@ from Inter import *
 from LexicalAnalyzer.Lexer import Lexer
 from LexicalAnalyzer.Tag import Tag
 from LexicalAnalyzer.Word import Word
+from LexicalAnalyzer.Bool import Bool as LBool
+from LexicalAnalyzer.Num import Num as LNum
+from LexicalAnalyzer.Real import Real as LReal
+from LexicalAnalyzer.String import String as LString
 from symbols.Env import Env
 
 
@@ -21,6 +25,7 @@ class Parser(object):
     def start(self):
         # print(self.stmts().stmt1.block)
         s = self.stmts()
+        print(self.top.__dict__)
         print(str(s.__dict__))
 
     def stmts(self):
@@ -217,14 +222,13 @@ class Parser(object):
         t = self.look
         self.match(Tag.ID)
         token = self.top.get(t.lexeme)
-        print(t.lexeme, self.top)
         if not token:
             raise ValueError('Variable %s does not exist' % t)
 
-        if type is not None and token != type:
-            raise TypeError('Variable %s expected to be %s' % (t, type))
+        # if type is not None and token != type:
+        #     raise TypeError('Variable %s expected to be %s' % (t, type))
 
-        return Id(t, type)
+        return Id(t, token)
 
     def else_stmt(self, if_stmt):
         self.match(Tag.ELSE)
@@ -253,11 +257,12 @@ class Parser(object):
     def assign(self):
         self.match(Tag.ASSIGN)
         _id = self.look
-        self.top.put(_id.lexeme)
         self.match(Tag.ID)
         expr = self.expr()
+        type = self.expr_type(expr)
+        self.top.put(_id.lexeme, type)
         self.move()
-        return Assign(Id(_id, None), expr)
+        return Assign(Id(_id, type), expr)
 
     def is_arith(self, token):
         return self.look.tag in (
@@ -299,7 +304,7 @@ class Parser(object):
         type = self.look
         self.match(Tag.TYPE)
 
-        func_env = [name.lexeme, '%sfunction' % type.lexeme]
+        func_env = [name.lexeme, FunctionType(type.lexeme)]
         self.top.put(*func_env)
 
         envs = [func_env]
@@ -313,12 +318,75 @@ class Parser(object):
             self.match(Tag.TYPE_SEPARATOR)
             argType = self.look
             self.match(Tag.TYPE)
-            _id = Id(argName, argType)
+            wordtype = self.word_type(argType)
+            _id = Id(argName, wordtype)
             args.append(_id)
-            envs.append([argName.lexeme, argType.lexeme])
+            envs.append([argName.lexeme, wordtype])
 
         block = self.block(indent, envs)
         return Function(name, type, args, block)
+
+    def expr_type(self, expr, expr2=None):
+        if isinstance(expr, LNum):
+            return Integer()
+        elif isinstance(expr, LReal):
+            return Float()
+        elif isinstance(expr, LString):
+            return String()
+        elif isinstance(expr, LBool):
+            return Bool()
+        else:
+            if isinstance(expr, Word):
+                return self.word_type(expr)
+
+        if expr.type == 'Paren':
+            return self.expr_type(expr.expr)
+
+        if expr.type == 'Arithmetic':
+            type1 = self.expr_type(expr.expr1)
+            type2 = self.expr_type(expr.expr2)
+            return self.coerce_types(type1, type2)
+
+        if isinstance(expr, Id):
+            return expr.type
+
+        if expr.type == 'FunctionCall':
+            return expr.function_name.type
+
+    def word_type(self, word):
+        if word.lexeme == 'int':
+            return Integer()
+        elif word.lexeme == 'string':
+            return String()
+        elif word.lexeme == 'void':
+            return Void()
+        elif word.lexeme == 'float':
+            return Float()
+        elif word.lexeme == 'bool':
+            return Bool()
+        else:
+            raise TypeError('Unknown type %s' % word.lexeme)
+
+    def coerce_types(self, type1, type2):
+        if isinstance(type1, type(type2)):
+            return type1
+
+        if isinstance(type1, Integer) and isinstance(type2, Float):
+            return Float()
+        elif isinstance(type1, Float) and isinstance(type2, Integer):
+            return Float()
+
+        if isinstance(type1, String) and isinstance(type2, Integer):
+            return String()
+        elif isinstance(type1, Integer) and isinstance(type2, String):
+            return String()
+
+        if isinstance(type1, Bool) and isinstance(type2, Integer):
+            return Integer()
+        elif isinstance(type1, Integer) and isinstance(type2, Bool):
+            return Integer()
+
+        raise TypeError('Cannot coerce types %s and %s' % (type(type1), type(type2)))
 
     def lambd(self):
         self.match(Tag.FUN)
