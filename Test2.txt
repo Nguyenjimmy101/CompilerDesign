@@ -4,4 +4,4 @@ def loopadder a b
     = c (+ a c)
   return c
 
-print (loopadder 2 5)
+print (2 5)

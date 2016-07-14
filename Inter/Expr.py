@@ -12,3 +12,20 @@ class Expr(Node):
 
     def reduce(self):
         return self
+
+    def jumping(self, t, f):
+        pass
+        #self.emitjumps(self.Op, t,f)
+
+    def emitjumps(self, test, t, f):
+        if t != 0 and f != 0:
+            pass
+        elif t != 0:
+            pass
+        elif f != 0:
+            pass
+        else:
+            pass
+
+    def __str__(self):
+        pass
