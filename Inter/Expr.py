@@ -1,7 +1,7 @@
 from .Node import Node
 
-class Expr(Node):
 
+class Expr(Node):
     def __init__(self, token, operator):
         super().__init__()
         self.token = token
@@ -19,13 +19,14 @@ class Expr(Node):
 
     def emitjumps(self, test, t, f):
         if t != 0 and f != 0:
-            pass
+            self.emit("if " + test + " goto L" + t)
+            self.emit("goto L" + f)
         elif t != 0:
-            pass
+            self.emit("if " + test + " goto L" + t)
         elif f != 0:
-            pass
+            self.emit("iffalse " + test + " goto L" + f)
         else:
             pass
 
     def __str__(self):
-        pass
+        str(self.__dict__)

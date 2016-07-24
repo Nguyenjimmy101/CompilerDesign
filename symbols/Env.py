@@ -1,6 +1,6 @@
 # from treelib import Node, Tree
 from pprint import pformat
-from Inter.UnkownType import UnknownType
+from Inter.UnknownType import UnknownType
 
 
 class Env:

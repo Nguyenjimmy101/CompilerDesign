@@ -1,7 +1,5 @@
-def loopadder a b
+def loopadder:int a:int b:int
   = c 0
-  for i (range b)
-    = c (+ a c)
   return c
-
-print (2 5)
+= d 2.5 5
+print d
