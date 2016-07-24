@@ -3,6 +3,7 @@ from .Node import Node
 class Expr(Node):
 
     def __init__(self, token, operator):
+        super().__init__()
         self.token = token
         self.type = operator
         self.type = 'Expression'
@@ -14,8 +15,7 @@ class Expr(Node):
         return self
 
     def jumping(self, t, f):
-        pass
-        #self.emitjumps(self.Op, t,f)
+        self.emitjumps(self.token, t, f)
 
     def emitjumps(self, test, t, f):
         if t != 0 and f != 0:

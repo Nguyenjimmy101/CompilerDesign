@@ -1,8 +1,11 @@
 from .Node import Node
+from .Expr import Expr
 
 
-class Type():
+class Type(Expr):
     def __init__(self, kind):
+        super().__init__('', '')
+        
         self.kind = kind
         self.type = 'Type'
         # self.offset = b

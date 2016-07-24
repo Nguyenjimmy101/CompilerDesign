@@ -7,7 +7,10 @@ class Null:
 
     def __repr__(self):
         return 'NULL'
-
+        
+    def gen(self, before, after):
+        pass
+    
 
 class Stmt(Node):
     null = Null()

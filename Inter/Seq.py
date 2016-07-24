@@ -14,7 +14,10 @@ class Seq(Stmt):
         elif self.stmt2 == Stmt.null:
             self.stmt1.gen(before, after)
         else:
-            pass
+            label = self.newlabel()
+            self.stmt1.gen(before, label)
+            self.emitlabel(label)
+            self.stmt2.gen(label, after)
 
     def __repr__(self):
         return str(self.__dict__)

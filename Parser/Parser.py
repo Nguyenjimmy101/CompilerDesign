@@ -25,8 +25,13 @@ class Parser(object):
     def start(self):
         # print(self.stmts().stmt1.block)
         s = self.stmts()
-        print(self.top.__dict__)
-        print(str(s.__dict__))
+        begin = s.newlabel()
+        after = s.newlabel()
+        s.emitlabel(begin)
+        s.gen(begin, after)
+        s.emitlabel(after)
+        # print(self.top.__dict__)
+        # print(str(s.__dict__))
 
     def stmts(self):
         if isinstance(self.look, str) and len(self.look) == 0:
@@ -118,15 +123,19 @@ class Parser(object):
 
         if self.look.tag == Tag.NUM:
             expr = self.look
+            expr = Integer()
             self.match(Tag.NUM)
         elif self.look.tag == Tag.REAL:
             expr = self.look
+            expr = Float()
             self.match(Tag.REAL)
         elif self.look.tag == Tag.STRING:
             expr = self.look
+            expr = String()
             self.match(Tag.STRING)
         elif self.look.tag == Tag.BOOL:
             expr = self.look
+            expr = Bool()
             self.match(Tag.BOOL)
         elif self.look.tag == Tag.ADD or self.look.tag == Tag.MINUS:
             return self.mathop()

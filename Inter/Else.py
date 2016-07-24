@@ -9,7 +9,14 @@ class Else(Stmt):
         self.type = 'Else'
 
     def gen(self, before, after):
-        pass
+        label1 = self.newlabel()
+        label2 = self.newlabel()
+        self.if_stmt.jumping(0, label2)
+        self.emitlabel(label1)
+        self.if_stmt.gen(label1, after)
+        self.emit('goto L%s' % after)
+        self.emitlabel(label2)
+        self.block.gen(label2, after)
 
     def __repr__(self):
         return str(self.__dict__)

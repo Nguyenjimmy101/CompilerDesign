@@ -12,7 +12,10 @@ class If(Stmt):
         self.type = 'If'
 
     def gen(self, before, after):
-        pass
+        label = self.newlabel()
+        self.expr1.jumping(0, after)
+        self.emitlabel(label)
+        self.block.gen(label, after)
 
     def __repr__(self):
         return str(self.__dict__)

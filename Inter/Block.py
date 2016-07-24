@@ -10,3 +10,8 @@ class Block(Node):
 
     def __repr__(self):
         return str(self.__dict__)
+        
+    def gen(self, before, after):
+        label = self.newlabel()
+        self.stmts.gen(label, after)
+        self.emitlabel(label)
