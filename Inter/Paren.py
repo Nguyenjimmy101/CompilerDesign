@@ -7,6 +7,9 @@ class Paren(Node):
         self.token = token
         self.expr = expr
         self.type = 'Paren'
+        
+    def gen(self, before, after):
+        return self
 
     def __repr__(self):
         return str(self.__dict__)

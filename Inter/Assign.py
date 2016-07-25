@@ -9,7 +9,7 @@ class Assign(Stmt):
         self.type = 'Assignment'
 
     def gen(self, before, after):
-        self.emit('%s = %s' % (self.id, self.expr.gen()))
+        self.emit('%s = %s' % (self.id, self.expr.gen(before, after)))
 
     def __repr__(self):
         return str(self.__dict__)
