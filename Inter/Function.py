@@ -12,3 +12,6 @@ class Function(Node):
 
     def __repr__(self):
         return str(self.__dict__)
+        
+    def gen(self, before, after):
+        pass

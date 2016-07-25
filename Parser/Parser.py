@@ -361,6 +361,9 @@ class Parser(object):
 
         if expr.type == 'FunctionCall':
             return expr.function_name.type
+            
+        if isinstance(expr, Type):
+            return expr
 
     def word_type(self, word):
         if word.lexeme == 'int':
