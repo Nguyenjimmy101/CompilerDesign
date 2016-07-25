@@ -19,12 +19,12 @@ class Expr(Node):
 
     def emitjumps(self, test, t, f):
         if t != 0 and f != 0:
-            self.emit("if " + test + " goto L" + t)
-            self.emit("goto L" + f)
+            self.emit('if %s goto L%s' % (test, t))
+            self.emit('goto L%s' % f)
         elif t != 0:
-            self.emit("if " + test + " goto L" + t)
+            self.emit('if %s goto L%s' % (test, t))
         elif f != 0:
-            self.emit("iffalse " + test + " goto L" + f)
+            self.emit('iffalse %s goto L%s' % (test, f))
         else:
             pass
 
