@@ -39,7 +39,6 @@ class Parser(object):
 
         if self.look.tag != Tag.EOF:
             s = self.stmt()
-
             if isinstance(s, Word) and s.tag == Tag.EOF:
                 return Stmt.null
 
