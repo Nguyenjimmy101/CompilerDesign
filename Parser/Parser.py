@@ -33,7 +33,7 @@ class Parser(object):
         # print(self.top.__dict__)
 
         # Print tree
-        print('TREE')
+        print('\nTREE')
         print(str(s.__dict__))
 
     def stmts(self):
@@ -56,7 +56,7 @@ class Parser(object):
 
     def match(self, tag):
         if self.look.tag == tag:
-            print(self.indent, self.look)
+            # print(self.indent, self.look)
             self.move()
         else:
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
@@ -85,7 +85,6 @@ class Parser(object):
         if isinstance(self.look, str) and len(self.look) == 0:
             return Stmt.null
 
-        print('block', self.indent, self.look, oldindent)
         if self.indent > oldindent:
             s = self.stmt()
             seq = Seq(s, self.block_body(oldindent))

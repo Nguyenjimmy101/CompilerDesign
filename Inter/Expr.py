@@ -2,6 +2,7 @@ from .Node import Node
 
 
 class Expr(Node):
+
     def __init__(self, token, operator):
         super().__init__()
         self.token = token
@@ -18,12 +19,12 @@ class Expr(Node):
         self.emitjumps(self.token, t, f)
 
     def emitjumps(self, test, t, f):
-        if t != 0 and f != 0:
+        if t and f:
             self.emit('if %s goto L%s' % (test, t))
             self.emit('goto L%s' % f)
-        elif t != 0:
+        elif t:
             self.emit('if %s goto L%s' % (test, t))
-        elif f != 0:
+        elif f:
             self.emit('if false %s goto L%s' % (test, f))
         else:
             pass

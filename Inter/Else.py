@@ -11,10 +11,9 @@ class Else(Stmt):
         self.type = 'Else'
 
     def gen(self, before, after):
-        print('else statement!')
         label1 = self.newlabel()
         label2 = self.newlabel()
-        # self.if_stmt.expr.jumping(0, label2)
+        self.if_stmt.rel.jumping(0, label2)
         self.emitlabel(label1)
         self.if_stmt.gen(label1, after)
         self.emit('goto L%s' % after)
