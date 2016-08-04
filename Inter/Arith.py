@@ -9,7 +9,7 @@ class Arith(Op, Expr):
         self.expr2 = x2
         self.type = 'Arithmetic'
 
-    def gen(self):
+    def gen(self, before=None, after=None):
         return self.expr1.reduce(), self.expr2.reduce()
 
     def __repr__(self):

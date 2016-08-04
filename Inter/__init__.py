@@ -20,3 +20,4 @@ from Inter.While import While
 from Inter.Block import Block
 from Inter.Type import *
 from Inter.UnknownType import UnknownType
+from Inter.Rel import Rel

@@ -31,7 +31,10 @@ class Parser(object):
         s.gen(begin, after)
         s.emitlabel(after)
         # print(self.top.__dict__)
-        # print(str(s.__dict__))
+
+        # Print tree
+        print('TREE')
+        print(str(s.__dict__))
 
     def stmts(self):
         if isinstance(self.look, str) and len(self.look) == 0:
@@ -53,7 +56,7 @@ class Parser(object):
 
     def match(self, tag):
         if self.look.tag == tag:
-            # print(self.indent, self.look)
+            print(self.indent, self.look)
             self.move()
         else:
             raise SyntaxError('Expected %s, got %s' % (tag, self.look))
@@ -82,6 +85,7 @@ class Parser(object):
         if isinstance(self.look, str) and len(self.look) == 0:
             return Stmt.null
 
+        print('block', self.indent, self.look, oldindent)
         if self.indent > oldindent:
             s = self.stmt()
             seq = Seq(s, self.block_body(oldindent))
@@ -201,8 +205,9 @@ class Parser(object):
         if self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
 
+        rel = Rel(op, expr1, expr2)
         b = self.block(indent)
-        _if = If(op, expr1, expr2, b)
+        _if = If(rel, b)
 
         if self.look.tag == Tag.ELIF:
             return ElifSeq(_if, self.elif_stmt())
@@ -219,8 +224,9 @@ class Parser(object):
         if self.look.tag == Tag.NEW_LINE:
             self.match(Tag.NEW_LINE)
 
+        rel = Rel(op, expr1, expr2)
         b = self.block(indent)
-        _elif = Elif(op, expr1, expr2, b)
+        _elif = Elif(rel, b)
 
         if self.look.tag == Tag.ELIF:
             return ElifSeq(_elif, self.elif_stmt())
@@ -362,7 +368,7 @@ class Parser(object):
 
         if expr.type == 'FunctionCall':
             return expr.function_name.type
-            
+
         if isinstance(expr, Type):
             return expr
 
@@ -399,7 +405,8 @@ class Parser(object):
         elif isinstance(type1, Integer) and isinstance(type2, Bool):
             return Integer()
 
-        raise TypeError('Cannot coerce types %s and %s' % (type(type1), type(type2)))
+        raise TypeError('Cannot coerce types %s and %s' %
+                        (type(type1), type(type2)))
 
     def lambd(self):
         self.match(Tag.FUN)

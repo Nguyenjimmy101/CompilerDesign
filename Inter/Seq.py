@@ -9,15 +9,16 @@ class Seq(Stmt):
         self.type = 'Sequence'
 
     def gen(self, before, after):
+        # return self
         if self.stmt1 == Stmt.null:
             self.stmt2.gen(before, after)
         elif self.stmt2 == Stmt.null:
             self.stmt1.gen(before, after)
         else:
-            label = self.newlabel()
-            self.stmt1.gen(before, label)
-            self.emitlabel(label)
-            self.stmt2.gen(label, after)
+            # label = self.newlabel()
+            self.stmt1.gen(before, after)
+            # self.emitlabel(label)
+            self.stmt2.gen(before, after)
 
     def __repr__(self):
         return str(self.__dict__)

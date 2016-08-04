@@ -8,7 +8,7 @@ class Expr(Node):
         self.type = operator
         self.type = 'Expression'
 
-    def gen(self):
+    def gen(self, before=None, after=None):
         return self
 
     def reduce(self):
@@ -24,7 +24,7 @@ class Expr(Node):
         elif t != 0:
             self.emit('if %s goto L%s' % (test, t))
         elif f != 0:
-            self.emit('iffalse %s goto L%s' % (test, f))
+            self.emit('if false %s goto L%s' % (test, f))
         else:
             pass
 
