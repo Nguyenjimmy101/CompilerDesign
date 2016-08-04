@@ -1,5 +1,6 @@
-def loopadder:int a:int b:int
-  = c 0
-  return c
-= d 2.5 5
-print d
+if == 1 2
+  = x 3
+else
+  = y 4
+  
+print "Hello 2"
