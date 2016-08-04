@@ -127,19 +127,19 @@ class Parser(object):
 
         if self.look.tag == Tag.NUM:
             expr = self.look
-            expr = Integer()
+            expr = Integer(self.look)
             self.match(Tag.NUM)
         elif self.look.tag == Tag.REAL:
             expr = self.look
-            expr = Float()
+            expr = Float(self.look)
             self.match(Tag.REAL)
         elif self.look.tag == Tag.STRING:
             expr = self.look
-            expr = String()
+            expr = String(self.look)
             self.match(Tag.STRING)
         elif self.look.tag == Tag.BOOL:
             expr = self.look
-            expr = Bool()
+            expr = Bool(self.look)
             self.match(Tag.BOOL)
         elif self.look.tag == Tag.ADD or self.look.tag == Tag.MINUS:
             return self.mathop()
@@ -343,13 +343,13 @@ class Parser(object):
 
     def expr_type(self, expr, expr2=None):
         if isinstance(expr, LNum):
-            return Integer()
+            return Integer(expr.value)
         elif isinstance(expr, LReal):
-            return Float()
+            return Float(expr.value)
         elif isinstance(expr, LString):
-            return String()
+            return String(expr.value)
         elif isinstance(expr, LBool):
-            return Bool()
+            return Bool(expr.value)
         else:
             if isinstance(expr, Word):
                 return self.word_type(expr)
@@ -372,6 +372,7 @@ class Parser(object):
             return expr
 
     def word_type(self, word):
+        print(word)
         if word.lexeme == 'int':
             return Integer()
         elif word.lexeme == 'string':

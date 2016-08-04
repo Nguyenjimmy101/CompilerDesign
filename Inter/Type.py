@@ -3,12 +3,12 @@ from .Expr import Expr
 
 
 class Type(Expr):
-    def __init__(self, kind):
+    def __init__(self, kind, value=None):
         super().__init__('', '')
         
         self.kind = kind
         self.type = 'Type'
-        # self.offset = b
+        self.value = value
 
     def __repr__(self):
         return str(self.__dict__)
@@ -18,23 +18,23 @@ class Type(Expr):
 
 
 class Integer(Type):
-    def __init__(self):
-        super().__init__('int')
+    def __init__(self, value=None):
+        super().__init__('int', value)
 
 
 class Float(Type):
-    def __init__(self):
-        super().__init__('float')
+    def __init__(self, value=None):
+        super().__init__('float', value)
 
 
 class Bool(Type):
-    def __init__(self):
-        super().__init__('bool')
+    def __init__(self, value=None):
+        super().__init__('bool', value)
 
 
 class String(Type):
-    def __init__(self):
-        super().__init__('string')
+    def __init__(self, value=None):
+        super().__init__('string', value)
 
 
 class Void(Type):

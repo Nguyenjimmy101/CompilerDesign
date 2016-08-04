@@ -10,7 +10,8 @@ class Arith(Op, Expr):
         self.type = 'Arithmetic'
 
     def gen(self, before=None, after=None):
-        return self.expr1.reduce(), self.expr2.reduce()
+        # return self.expr1.reduce(), self.expr2.reduce()
+        return self
 
     def __repr__(self):
         return str(self.__dict__)
