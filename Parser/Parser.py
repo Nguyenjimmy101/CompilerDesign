@@ -64,7 +64,9 @@ class Parser(object):
         if envs:
             for env in envs:
                 self.top.put(*env)
-        body = self.block_body(indent or self.indent)
+        if indent is None:
+            indent = self.indent
+        body = self.block_body(indent)
         block = Block(body, self.top)
         self.top = saved
         return block
