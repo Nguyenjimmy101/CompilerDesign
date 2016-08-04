@@ -1,9 +1,11 @@
 from LexicalAnalyzer.Lexer import Lexer
 
 
+global labels
+labels = 0
+
 class Node(object):
     lexline = 0
-    labels = 0
 
     def __init__(self):
         self.lexline = Lexer.line
@@ -12,8 +14,9 @@ class Node(object):
         raise SyntaxError('near line %s, : %s' % (self.lexline, s))
 
     def newlabel(self):
-        self.labels += 1
-        return self.labels
+        global labels
+        labels += 1
+        return labels
 
     def emit(self, s):
         print('\t%s' % s)
