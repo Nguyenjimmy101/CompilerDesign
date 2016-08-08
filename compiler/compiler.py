@@ -5,15 +5,25 @@ class Compiler(object):
         self.env_table = env_table
         self.tree = tree
 
+        self.variables = {}
+        self.sections = []
+        self.labels = []
+
     def section(self, name):
-        self.outfile.write('\t.%s\n' % name)
+        self.sections.append(name)
+        self.outfile.write('\n\t.%s\n' % name)
+
+    def label(self, name):
+        self.labels.append(name)
+        self.outfile.write('%s:\n' % name)
 
     def compile(self):
         with open(self.outfile_name, 'w') as outfile:
             self.outfile = outfile
+            
             self.section('text')
             self.section('globl main')
-            outfile.write('main:')
+            self.label('main')
 
             # Generate .data section
-            outfile.write('\t.data\n')
+            self.section('data')
