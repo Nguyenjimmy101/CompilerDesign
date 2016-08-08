@@ -84,19 +84,23 @@ class Compiler(object):
         expr2 = expr.expr2
         
         op = switch_arith_token(expr.token.lexeme)
-        # optype = op if expr1.type == 'Type' and expr2.type == 'Type' else '%si' % op
         
-        if expr1.type == 'Type':
+        if expr1.type == 'Type' and expr2.type == 'Type':
             self.write('li $t%s, %s' % (var, expr1.value.value))
             self.write('%s $t%s, $t%s, %s' % (op, var, var, expr2.value.value))
             return
-        
-        if expr2.type == 'Type':
+        elif expr1.type == 'Type' and expr2.type != 'Type':
+            exprvar = self.variables[expr2._id.lexeme]
+            self.write('li $t%s, %s' % (var, expr1.value.value))
+            self.write('%s $t%s, $t%s, $%s' % (op, var, var, exprvar))
+        elif expr2.type == 'Type' and expr1.type != 'Type':
+            exprvar = self.variables[expr1._id.lexeme]
             self.write('li $t%s, %s' % (var, expr2.value.value))
-            self.write('%s $t%s, $t%s, %s' % (op, var, var, expr1.value.value))
-            return
-            
-        print(expr1)
+            self.write('%s $t%s, $t%s, $%s' % (op, var, var, exprvar))
+        elif expr1.type != 'Type' and expr2.type != 'Type':
+            expr1var = self.variables[expr1._id.lexeme]
+            expr2var = self.variables[expr2._id.lexeme]
+            self.write('%s $t%s, $%s, $%s' % (op, var, expr1var, expr2var))
         
     def paren(self, paren):
         print('paren', paren)
