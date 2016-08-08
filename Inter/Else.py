@@ -17,7 +17,8 @@ class Else(Stmt):
         self.if_stmt.rel.jumping(0, label2)
 
         self.emitlabel(label1)
-        self.if_stmt.gen(label1, after)
+
+        self.if_stmt.gen_two(label1, after)
         self.emit('goto L%s' % after)
         
         self.emitlabel(label2)

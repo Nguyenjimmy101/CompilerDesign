@@ -15,5 +15,8 @@ class If(Stmt):
         self.emitlabel(label)
         self.block.gen(label, after)
 
+    def gen_two(self, label, after):
+        self.block.gen(label, after)
+
     def __repr__(self):
         return str(self.__dict__)
