@@ -10,6 +10,7 @@ def switch_arith_token(token):
     else:
         raise SyntaxError('"%s" is not a valid arithmetic token' % token)
 
+
 class Compiler(object):
 
     def __init__(self, env_table, tree, outfile_name='out.asm'):
@@ -69,27 +70,29 @@ class Compiler(object):
         self.route(seq.stmt2)
 
     def assign(self, stmt):
+        # variable id name
+        varid = stmt.id._id.lexeme
         if stmt.expr.type == 'Type':
             t = self.new_t()
             self.write('li $t%s, %s' % (t, stmt.expr.value.value))
-            self.variables[stmt.id._id.lexeme] = 't%s' % t
+            self.variables[varid] = 't%s' % t
         elif stmt.expr.type == 'Paren':
             # arithmetic most likely
             expr = stmt.expr.expr
             if expr.type == 'Arithmetic':
-                self.arithmetic(expr)
-                
+                t = self.arithmetic(expr)
+                self.variables[varid] = 't%s' % t
+
     def arithmetic(self, expr):
         var = self.new_t()
         expr1 = expr.expr1
         expr2 = expr.expr2
-        
+
         op = switch_arith_token(expr.token.lexeme)
-        
+
         if expr1.type == 'Type' and expr2.type == 'Type':
             self.write('li $t%s, %s' % (var, expr1.value.value))
             self.write('%s $t%s, $t%s, %s' % (op, var, var, expr2.value.value))
-            return
         elif expr1.type == 'Type' and expr2.type != 'Type':
             exprvar = self.variables[expr2._id.lexeme]
             self.write('li $t%s, %s' % (var, expr1.value.value))
@@ -103,7 +106,8 @@ class Compiler(object):
             expr2var = self.variables[expr2._id.lexeme]
             self.write('%s $t%s, $%s, $%s' % (op, var, expr1var, expr2var))
         self.nl()
-        
+        return var
+
     def paren(self, paren):
         print('paren', paren)
 
@@ -135,6 +139,8 @@ class Compiler(object):
 
             self.sequence(self.tree)
             self.exit()
+
+            print('VARIABLES', self.variables)
 
             # Generate .data section
             self.section('data')
