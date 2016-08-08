@@ -113,7 +113,7 @@ class Compiler(object):
 
     def print(self, stmt):
         self.write('li $v0, 1')
-        self.write('la $a0, ($t0)')
+        self.write('la $a0, ($%s)' % self.variables[stmt.expr._id.lexeme])
         self.syscall()
 
     def route(self, element):
