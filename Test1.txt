@@ -1,14 +1,2 @@
-def function:void x:int
-  = t false
-  = y (+ 15 t)
-  if == true false
-    = inIf (+ x 2)
-  elif == 2 y
-    = firstElif 2
-  elif == true true
-    = secondElif x
-  else
-    = inElse x
-
-= y 'Hello'
-print (function 2)
+= a 5
+print a
