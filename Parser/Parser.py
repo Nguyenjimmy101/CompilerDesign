@@ -26,14 +26,14 @@ class Parser(object):
     def start(self):
         # print(self.stmts().stmt1.block)
         s = self.stmts()
-        begin = s.newlabel()
-        after = s.newlabel()
-        s.emitlabel(begin)
-        s.gen(begin, after)
-        s.emitlabel(after)
+        # begin = s.newlabel()
+        # after = s.newlabel()
+        # s.emitlabel(begin)
+        # s.gen(begin, after)
+        # s.emitlabel(after)
 
-        print(self.top.__dict__)
-        #Print tree
+        # print(self.top.__dict__)
+        # Print tree
         print('\nTREE')
         print(str(s.__dict__))
 
