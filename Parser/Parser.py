@@ -7,6 +7,7 @@ from LexicalAnalyzer.Num import Num as LNum
 from LexicalAnalyzer.Real import Real as LReal
 from LexicalAnalyzer.String import String as LString
 from symbols.Env import Env
+from compiler.compiler import Compiler
 
 
 class Parser(object):
@@ -30,11 +31,14 @@ class Parser(object):
         s.emitlabel(begin)
         s.gen(begin, after)
         s.emitlabel(after)
-        # print(self.top.__dict__)
 
+        # print(self.top.__dict__)
         # Print tree
         print('\nTREE')
         print(str(s.__dict__))
+
+        compiler = Compiler(self.top, s)
+        compiler.compile()
 
     def stmts(self):
         if isinstance(self.look, str) and len(self.look) == 0:
