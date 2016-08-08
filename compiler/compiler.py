@@ -50,6 +50,7 @@ class Compiler(object):
 
     def syscall(self):
         self.write('syscall')
+        self.nl()
 
     def exit(self):
         self.write('li $v0, 10')
@@ -101,6 +102,7 @@ class Compiler(object):
             expr1var = self.variables[expr1._id.lexeme]
             expr2var = self.variables[expr2._id.lexeme]
             self.write('%s $t%s, $%s, $%s' % (op, var, expr1var, expr2var))
+        self.nl()
         
     def paren(self, paren):
         print('paren', paren)
