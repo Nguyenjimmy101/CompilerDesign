@@ -12,7 +12,6 @@ def switch_arith_token(token):
 
 
 class Compiler(object):
-
     def __init__(self, env_table, tree, outfile_name='out.asm'):
         self.outfile_name = outfile_name
         self.env_table = env_table
@@ -108,6 +107,12 @@ class Compiler(object):
         self.nl()
         return var
 
+    def _if(self, stmt):
+        pass
+
+    def _else(self, stmt):
+        pass
+
     def paren(self, paren):
         print('paren', paren)
 
@@ -126,6 +131,10 @@ class Compiler(object):
             self.print(element)
         elif element.type == 'Paren':
             self.paren(element)
+        elif element.type == 'If':
+            print("It got an if statement")
+        elif element.type == "Else":
+            print("It got an else statement")
         else:
             print('Null statement')
 
