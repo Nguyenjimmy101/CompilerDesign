@@ -49,6 +49,8 @@ class Compiler(object):
     def print(self, stmt):
         self.tab()
         self.write('li $v0, 1')
+        self.tab()
+        self.write('la $a0, ($t2)')
         self.syscall()
 
     def route(self, element):
