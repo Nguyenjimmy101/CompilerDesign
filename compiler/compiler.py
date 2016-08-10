@@ -108,10 +108,22 @@ class Compiler(object):
         return var
 
     def _if(self, stmt):
+        #beq compare1,compare2,jumpto
+        #self.write(j, label after)
         pass
 
     def _else(self, stmt):
-        pass
+        if_stmt = stmt.if_stmt
+            #_if()
+        block = stmt.block
+        type = stmt.type
+        #self.write('j $s', )
+        #varid = stmt.id._id.lexeme
+        #Check if next is arithmetic
+        #expr = stmt.expr.expr
+        #if expr.type == 'Arithmetic':
+        #    t = self.arithmetic(expr)
+        #   self.variables[varid] = 't%s' % t
 
     def paren(self, paren):
         print('paren', paren)
@@ -132,9 +144,9 @@ class Compiler(object):
         elif element.type == 'Paren':
             self.paren(element)
         elif element.type == 'If':
-            print("It got an if statement")
+            self._if(self._if(element))
         elif element.type == "Else":
-            print("It got an else statement")
+            self._else(element)
         else:
             print('Null statement')
 
