@@ -1,2 +1,2 @@
-= a (+ 'String' 3)
-print a
+= a 2
+print b

@@ -1,6 +1,4 @@
-if == 1 2
-  = x 3
-else
-  = y 4
-  
-print "Hello 2"
+= a 1
+= b 2
+= c (+ a b)
+print c
