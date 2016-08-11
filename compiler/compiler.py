@@ -4,7 +4,7 @@ def switch_arith_token(token):
     elif token == '-':
         return 'sub'
     elif token == '*':
-        return 'mul'
+        return 'mult'
     elif token == '/':
         return 'div'
     else:
