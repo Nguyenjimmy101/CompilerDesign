@@ -15,3 +15,9 @@ class Rel(Expr):
 
         test = '%s %s %s' % (str(a), str(self.token), str(b))
         self.emitjumps(test, true, false)
+
+    def __str__(self):
+        return str(self.__dict__)
+
+    def __repr__(self):
+        return str(self.__dict__)
