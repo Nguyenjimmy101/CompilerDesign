@@ -12,6 +12,7 @@ def switch_arith_token(token):
 
 
 class Compiler(object):
+
     def __init__(self, env_table, tree, outfile_name='out.asm'):
         self.outfile_name = outfile_name
         self.env_table = env_table
@@ -23,6 +24,8 @@ class Compiler(object):
         # 0 - 9
         self.t_var = []
 
+        # ex: t4, t0, t1
+        # does not include dollar signs
         self.variables = {}
 
     def new_t(self):
@@ -36,6 +39,14 @@ class Compiler(object):
             m = max(self.t_var)
             self.t_var.append(m + 1)
             return m + 1
+
+    def new_label(self):
+        if len(self.labels) == 0:
+            self.labels.append(1)
+            return 1
+        m = max(self.labels)
+        self.labels.append(m + 1)
+        return m + 1
 
     def tab(self):
         self.outfile.write('\t')
@@ -61,7 +72,6 @@ class Compiler(object):
         self.outfile.write('\n\t.%s\n' % name)
 
     def label(self, name):
-        self.labels.append(name)
         self.outfile.write('%s:\n' % name)
 
     def sequence(self, seq):
@@ -74,13 +84,15 @@ class Compiler(object):
         if stmt.expr.type == 'Type':
             t = self.new_t()
             self.write('li $t%s, %s' % (t, stmt.expr.value.value))
-            self.variables[varid] = 't%s' % t
+            if varid not in self.variables:
+                self.variables[varid] = 't%s' % t
         elif stmt.expr.type == 'Paren':
             # arithmetic most likely
             expr = stmt.expr.expr
             if expr.type == 'Arithmetic':
                 t = self.arithmetic(expr)
-                self.variables[varid] = 't%s' % t
+                if varid not in self.variables:
+                    self.variables[varid] = 't%s' % t
 
     def arithmetic(self, expr):
         var = self.new_t()
@@ -95,35 +107,100 @@ class Compiler(object):
         elif expr1.type == 'Type' and expr2.type != 'Type':
             exprvar = self.variables[expr2._id.lexeme]
             self.write('li $t%s, %s' % (var, expr1.value.value))
-            self.write('%s $t%s, $t%s, $%s' % (op, var, var, exprvar))
+            self.write('%s $%s, $t%s, $%s' % (op, exprvar, var, exprvar))
         elif expr2.type == 'Type' and expr1.type != 'Type':
             exprvar = self.variables[expr1._id.lexeme]
             self.write('li $t%s, %s' % (var, expr2.value.value))
-            self.write('%s $t%s, $t%s, $%s' % (op, var, var, exprvar))
+            self.write('%s $%s, $t%s, $%s' % (op, exprvar, var, exprvar))
         elif expr1.type != 'Type' and expr2.type != 'Type':
             expr1var = self.variables[expr1._id.lexeme]
             expr2var = self.variables[expr2._id.lexeme]
             self.write('%s $t%s, $%s, $%s' % (op, var, expr1var, expr2var))
-        self.nl()
+        # self.nl()
         return var
 
     def _if(self, stmt):
-        #beq compare1,compare2,jumpto
-        #self.write(j, label after)
-        pass
+        rel = stmt.rel
+
+        endif = self.new_label()
+        a = ''
+        b = ''
+
+        if hasattr(rel.expr1, '_id'):
+            # expr1 is an ID, should be in the variables table
+            a = self.variables[rel.expr1._id.lexeme]
+        else:
+            a_t = self.new_t()
+            self.write('li $t%s, %s' % (a_t, rel.expr1.value.value))
+            a = 't%s' % a_t
+
+        if hasattr(rel.expr2, '_id'):
+            # expr1 is an ID, should be in the variables table
+            b = self.variables[rel.expr2._id.lexeme]
+        else:
+            b_t = self.new_t()
+            self.write('li $t%s, %s' % (b_t, rel.expr2.value.value))
+            b = 't%s' % b_t
+
+        if rel.token.lexeme == '==':
+            self.write('bne $%s, $%s, L%s' % (a, b, endif))
+        elif rel.token.lexeme == '!=':
+            self.write('beq $%s, $%s, L%s' % (a, b, endif))
+        elif rel.token.lexeme == '<':
+            self.write('bge $%s, $%s, L%s' % (a, b, endif))
+        elif rel.token.lexeme == '>':
+            self.write('ble $%s, $%s, L%s' % (a, b, endif))
+        elif rel.token.lexeme == '<=':
+            self.write('bgt $%s, $%s, L%s' % (a, b, endif))
+        elif rel.token.lexeme == '>=':
+            self.write('blt $%s, $%s, L%s' % (a, b, endif))
+
+        self.route(stmt.block)
+        self.label('L%s' % endif)
 
     def _else(self, stmt):
         if_stmt = stmt.if_stmt
-            #_if()
-        block = stmt.block
-        type = stmt.type
-        #self.write('j $s', )
-        #varid = stmt.id._id.lexeme
-        #Check if next is arithmetic
-        #expr = stmt.expr.expr
-        #if expr.type == 'Arithmetic':
-        #    t = self.arithmetic(expr)
-        #   self.variables[varid] = 't%s' % t
+        rel = if_stmt.rel
+
+        else_lbl = self.new_label()
+        endif = self.new_label()
+        a = ''
+        b = ''
+
+        if hasattr(rel.expr1, '_id'):
+            # expr1 is an ID, should be in the variables table
+            a = self.variables[rel.expr1._id.lexeme]
+        else:
+            a_t = self.new_t()
+            self.write('li $t%s, %s' % (a_t, rel.expr1.value.value))
+            a = 't%s' % a_t
+
+        if hasattr(rel.expr2, '_id'):
+            # expr1 is an ID, should be in the variables table
+            b = self.variables[rel.expr2._id.lexeme]
+        else:
+            b_t = self.new_t()
+            self.write('li $t%s, %s' % (b_t, rel.expr2.value.value))
+            b = 't%s' % b_t
+
+        if rel.token.lexeme == '==':
+            self.write('bne $%s, $%s, L%s' % (a, b, else_lbl))
+        elif rel.token.lexeme == '!=':
+            self.write('beq $%s, $%s, L%s' % (a, b, else_lbl))
+        elif rel.token.lexeme == '<':
+            self.write('bge $%s, $%s, L%s' % (a, b, else_lbl))
+        elif rel.token.lexeme == '>':
+            self.write('ble $%s, $%s, L%s' % (a, b, else_lbl))
+        elif rel.token.lexeme == '<=':
+            self.write('bgt $%s, $%s, L%s' % (a, b, else_lbl))
+        elif rel.token.lexeme == '>=':
+            self.write('blt $%s, $%s, L%s' % (a, b, else_lbl))
+
+        self.route(if_stmt.block)
+        self.write('j L%s' % endif)
+        self.label('L%s' % else_lbl)
+        self.route(stmt.block)
+        self.label('L%s' % endif)
 
     def paren(self, paren):
         print('paren', paren)
@@ -144,9 +221,11 @@ class Compiler(object):
         elif element.type == 'Paren':
             self.paren(element)
         elif element.type == 'If':
-            self._if(self._if(element))
-        elif element.type == "Else":
+            self._if(element)
+        elif element.type == 'Else':
             self._else(element)
+        elif element.type == 'Block':
+            self.route(element.stmts)
         else:
             print('Null statement')
 
